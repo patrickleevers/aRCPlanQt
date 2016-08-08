@@ -8,7 +8,10 @@
 #define OutflowProcess_H
 
 class OutflowProcess
-{// pressure/time function for outflow from a vessel at defined initial pressure, through a
+//  Models the process of outflow of a gas from a vessel at initial pressure p_i
+//  through a throat of area A_t, to ambient pressure p_amb.
+//  The key result is the variation of pressure with time.
+{
 	private:
 
         static const short maxTimeSteps;        // Time at which throat unchokes
@@ -22,9 +25,9 @@ class OutflowProcess
 	public:
 
         double p_now;
-        double pUnchoke;    //  Pressure at which throat unchokes
+        double pUnchoke;        //  Pressure at which throat unchokes
         double pHalfp1;
-        double xUnchoked_i; //  value at beginning of unchoked discharge
+        double xUnchoked_i;     //  value at beginning of unchoked discharge
         double tStar;
         double tStarHalfp1;
         double tStarOutflow;
@@ -35,9 +38,8 @@ class OutflowProcess
         short unchoked;
         short firstHalf_choked;
 
-        OutflowProcess();				// null constructor
+        OutflowProcess();       // null constructor
         OutflowProcess(const double pGauge);
-                    // construct a Control definition from the library or a file
 		OutflowProcess& operator=(const OutflowProcess& rhs);
 		void pressurePlot();
 		double get_tStarOutflow();

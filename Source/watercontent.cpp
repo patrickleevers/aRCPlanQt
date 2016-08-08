@@ -20,5 +20,6 @@ WaterContent::WaterContent(const Parameters parameters)
 {
     effective_density = 0.5 * parameters.water_inside_pipe
                                 * (parameters.sdr - 2.0) * 1000;
+
 }   //  end constructor
 

@@ -11,20 +11,37 @@ using namespace std;
 #include "Parameters.h"
 #include "ConfigFile.h"
 
-    string Parameters::pipeid_lib[5] = {"250mm_SDR11", "250mm_SDR17", "110mm_SDR11", "110mm_SDR17", "63mm_SDR11"};
-    string Parameters::matid_lib[6] = { "Soft PE80", "Generic PE100", "Soft PE100", "Generic PE1", "Generic PE2","Test"};
+    string Parameters::pipeid_lib[5] = {"250mm_SDR11",
+                                            "250mm_SDR17",
+                                            "110mm_SDR11",
+                                            "110mm_SDR17",
+                                            "63mm_SDR11"};
+    string Parameters::matid_lib[6] = {"Soft PE80",
+                                            "Generic PE100",
+                                            "Soft PE100",
+                                            "Generic PE1",
+                                            "Generic PE2",
+                                            "Test"};
     double Parameters::diameter_lib[5] = {250.0, 250.0, 110.0, 110.0, 63.0};
+
     double Parameters::sdr_lib[5] = {11.0, 17.6, 11.0, 17.6, 11.0};
 
-    double Parameters::density_lib[6] = {938.0, 960.0, 938.0, 960.0, 950.0,0.0};
-    double Parameters::edyn0degc_lib[6] = {2.62, 3.17, 1.31, 1.585, 1.5,0.0};
-    double Parameters::dedyndt_lib[6] = {-0.037, -0.0427, -0.0185, -0.02135, -0.02,0.0};
-    double Parameters::creepmodulus_lib[6] = {0.3, 0.3, 0.3, 0.3, 0.3,0.0};
-    double Parameters::poisson_lib[6] = {0.38, 0.38, 0.38, 0.38, 0.38,0.0};
-    double Parameters::from_lib[3] = {0.0, 1.0, 1.0};
-    double Parameters::to_lib[3] = {1.0, 20.0, 50.0};
+    double Parameters::density_lib[6] =
+                    {938.0, 960.0, 938.0, 960.0, 950.0,0.0};
+    double Parameters::edyn0degc_lib[6] =
+                    {2.62, 3.17, 1.31, 1.585, 1.5,0.0};
+    double Parameters::dedyndt_lib[6] =
+                    {-0.037, -0.0427, -0.0185, -0.02135, -0.02,0.0};
+    double Parameters::creepmodulus_lib[6] =
+                    {0.3, 0.3, 0.3, 0.3, 0.3,0.0};
+    double Parameters::poisson_lib[6] =
+                    {0.38, 0.38, 0.38, 0.38, 0.38,0.0};
+    double Parameters::from_lib[3] =
+                    {0.0, 1.0, 1.0};
+    double Parameters::to_lib[3] =
+                    {1.0, 20.0, 50.0};
 
-//Null constructor
+//  Null constructor
 Parameters::Parameters()
 {
 
@@ -46,8 +63,6 @@ Parameters::Parameters()
     water_inside_pipe = 0.0;
 
     h=0.0;
-//    hoverr=0.0;
-//    radius=0.0;
     crack_width=0.0;
 
     geometryUpdate(0);
@@ -56,7 +71,7 @@ Parameters::Parameters()
     conditionToTemperature();
 
 }
-//Updates the geometry for the pipe
+//  Updates the geometry for the pipe
 void Parameters::geometryUpdate(int n)
 {
     pipeid = Parameters::pipeid_lib[n];
@@ -67,7 +82,7 @@ void Parameters::geometryUpdate(int n)
 
 }
 
-//Update the material for the pipe
+//  Update the material for the pipe
 void Parameters::materialUpdate(int n)
 {
     matid = matid[n];
@@ -78,7 +93,7 @@ void Parameters::materialUpdate(int n)
     poisson = poisson_lib[n];
 }
 
-//Constructor
+//  Constructor
 Parameters::Parameters(ConfigFile config)
 {
     config.readInto(outflow_model_on, "outflowModelOn");
@@ -111,7 +126,7 @@ Parameters::Parameters(ConfigFile config)
     config.readInto(water_inside_pipe, "waterInsidePipe");
 }
 
-//Creates the "=" operator for this class
+//  Creates the "=" operator for this class
 Parameters& Parameters::operator=(const Parameters& rhs)
 {
     outflow_model_on = rhs.outflow_model_on;
@@ -130,9 +145,7 @@ Parameters& Parameters::operator=(const Parameters& rhs)
     sdr = rhs.sdr;
     notch_depth = rhs.notch_depth;
     diameter_creep_ratio = rhs.diameter_creep_ratio;
-//    radius = rhs.radius;
     h = rhs.h;
-//    hoverr = rhs.hoverr;
     crack_width = rhs.crack_width;
 
     matid = rhs.matid;
@@ -154,10 +167,9 @@ Parameters& Parameters::operator=(const Parameters& rhs)
     water_inside_pipe = rhs.water_inside_pipe;
 
     return *this;
-
 }
 
-//Modifies parameters to account for temperature
+//  Modifies parameters to account for temperature
 void Parameters::conditionToTemperature()
 {
     dynamic_modulus = edyn0degc + tempdegc * dedyndt;

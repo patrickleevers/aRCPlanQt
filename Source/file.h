@@ -25,7 +25,10 @@ using namespace std;
 #include "BeamModel.h"
 #include "OutflowProcess.h"
 
-class File : public Creep, public Backfill, public BeamModel, public OutflowProcess
+class File : public Creep,
+        public Backfill,
+        public BeamModel,
+        public OutflowProcess
 {
 private:
 

@@ -33,7 +33,8 @@ Solution Simulation::run(Parameters parameters)
 //    parameters.radius = parameters.h / parameters.hoverr;
 
     parameters.crack_width = parameters.diameter / parameters.sdr
-            - parameters.notch_depth; // mm, giving kJ/m2 for G; not necessarily equal to h
+            - parameters.notch_depth;
+                        // mm, giving kJ/m2 for G; not necessarily equal to h
 
     extern Solution solution;
     extern File file;
@@ -82,14 +83,16 @@ Solution Simulation::run(Parameters parameters)
         parameters.dynamic_modulus = parameters.edyn0degc
                 + parameters.tempdegc * parameters.dedyndt;
 
-        //	Calculate natural diameter of pipe due to residual strain contraction in time scale of fracture
+        //	Calculate natural diameter of pipe
+        //  due to residual strain contraction in time scale of fracture
         Creep creep(parameters);
         file.collect(creep);
 
         //  Speed dependent properties
         beamModel.reset(parameters, backfill, watercontent, creep);
 
-        //  Initialise crack and compute Irwin-Corten crack driving force at initial pressure:
+        //  Initialise crack and compute Irwin-Corten crack driving force
+        //  at initial pressure:
 
         // Determine crack opening displacement profile
         FDprofile final;

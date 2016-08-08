@@ -285,10 +285,12 @@ void FDprofile::GetBackfillEjectPoint(double& zeta_at_max_dzetadz,
     else
     {
         last2ndDeriv = this2ndDeriv;
-        this2ndDeriv = 16.0 * v_ptr[0] -30.0 * v_ptr[1] + 16.0 * v_ptr[2] - v_ptr[3];
+        this2ndDeriv = 16.0 * v_ptr[0] -30.0 * v_ptr[1]
+                                            + 16.0 * v_ptr[2] - v_ptr[3];
         if (this2ndDeriv < 0.0)
         {
-            zeta_at_max_dzetadz = (last2ndDeriv / (last2ndDeriv - this2ndDeriv) + 1.0) * interval;
+            zeta_at_max_dzetadz = interval *
+                        (last2ndDeriv / (last2ndDeriv - this2ndDeriv) + 1.0);
             foundIt = true;
         }
         else
@@ -298,10 +300,12 @@ void FDprofile::GetBackfillEjectPoint(double& zeta_at_max_dzetadz,
             while (i < elementsPerUnitLength and not foundIt)
             {
                 last2ndDeriv = this2ndDeriv;
-                this2ndDeriv = -v_ptr[i-2] + 16.0 * v_ptr[i-1] -30.0 * v_ptr[i] + 16.0 * v_ptr[i+1] - v_ptr[i+2];
+                this2ndDeriv = -v_ptr[i-2] + 16.0 * v_ptr[i-1] -30.0 * v_ptr[i]
+                                            + 16.0 * v_ptr[i+1] - v_ptr[i+2];
                 if (this2ndDeriv < 0.0)
                 {
-                    zeta_at_max_dzetadz = (last2ndDeriv / (last2ndDeriv - this2ndDeriv) + float(i)) * interval;
+                    zeta_at_max_dzetadz = interval *
+                      (last2ndDeriv / (last2ndDeriv - this2ndDeriv) + float(i));
                     foundIt = true;
                 }
                 i++;
@@ -370,7 +374,8 @@ short FDprofile::NodeAtMinimum()
         }
     }
     {
-        // check that neg min is not at last point in array, where next 'thisValue' is boundary zero
+        //  check that neg min is not at last point in array,
+        //  where next 'thisValue' is boundary zero
         lastValue = thisValue;
         lastGrad = thisGrad;
         thisGrad = -lastValue;

@@ -1,9 +1,10 @@
-//     aRCPLan
-//     Copyright (c) [2016] [Fraser Edwards][Dr Patrick Leevers]
-//     aRCPlan may be freely distributed under the MIT license.
-//     For the underlying model, see http://www.sciencedirect.com/science/article/pii/S0013794412003530
+//  aRCPLan
+//  Copyright (c) [2016] [Fraser Edwards][Dr Patrick Leevers]
+//  aRCPlan may be freely distributed under the MIT license.
+//  For the underlying model, see
+//  http://www.sciencedirect.com/science/article/pii/S0013794412003530
 
-//     Implementation of the guimain dialog box shown in guimain.ui
+//  Implementation of the guimain dialog box shown in guimain.ui
 
 #include <QString>
 #include <iostream>
@@ -85,9 +86,20 @@ ui -> parameter -> lineEdit() -> setAlignment(Qt::AlignRight);
 //If dropdown is empty fill with names, alternatively change index
 if(dropdown==0)
 {
-    ui -> materialname ->insertItems(0, QStringList() << "Soft PE80" << "Generic PE100" << "Soft PE100" << "Generic PE1" << "Generic PE2" << "Test");
-    ui -> pipename ->insertItems(0, QStringList() << "250mm_SDR11" << "250mm_SDR17" << "110mm_SDR11" << "110mm_SDR17" << "63mm_SDR11");
-    ui -> parameter ->insertItems(0, QStringList() << "Normalised Crack Speed" << "Initial Pressure" << "Test Temperature");
+    ui -> materialname ->insertItems(0, QStringList() << "Soft PE80"
+                                                    << "Generic PE100"
+                                                    << "Soft PE100"
+                                                    << "Generic PE1"
+                                                    << "Generic PE2"
+                                                    << "Test");
+    ui -> pipename ->insertItems(0, QStringList() << "250mm_SDR11"
+                                                    << "250mm_SDR17"
+                                                    << "110mm_SDR11"
+                                                    << "110mm_SDR17"
+                                                    << "63mm_SDR11");
+    ui -> parameter ->insertItems(0, QStringList() << "Normalised Crack Speed"
+                                                    << "Initial Pressure"
+                                                    << "Test Temperature");
     ui -> varCombo ->insertItems(0,QStringList() << "");
     ui -> yCombo -> insertItems(0,QStringList() << "");
 
@@ -169,8 +181,8 @@ ui -> fdnumber -> setText(QString::number(parameters.elements_in_l));
 
 }
 
-//Begins the calculation process, calls various functions which eventually provide
-//a solution and the accompanying outputs
+//  Begins the calculation process, calls various functions which eventually provide
+//  a solution and the accompanying outputs
 void guimain::on_Runbutton_clicked()
 {
 
@@ -195,7 +207,14 @@ void guimain::on_Runbutton_clicked()
         //Fill comboboxes
         ui ->yCombo ->clear();
         ui->varCombo ->clear();
-        ui -> yCombo -> insertItems(0, QStringList() << "" << "Decompression factor" << "Outflow length" << "Support factor" << "Speed factor" << "Non-dimensional crack driving force" << "Crack driving force");
+        ui -> yCombo -> insertItems(0, QStringList()
+                                    << ""
+                                    << "Decompression factor"
+                                    << "Outflow length"
+                                    << "Support factor"
+                                    << "Speed factor"
+                                    << "Non-dimensional crack driving force"
+                                    << "Crack driving force");
 
         ui ->var ->setText(ui->parameter->currentText());
 
@@ -206,7 +225,8 @@ void guimain::on_Runbutton_clicked()
                 ui -> varUnit->setText("");
                 for (i= sizeof(solution.adotc0)+1; i > 0; i--)
                 {
-                    ui -> varCombo ->insertItems(0,QStringList() << QString::number(solution.adotc0[i]));
+                    ui -> varCombo ->insertItems(0,QStringList()
+                                    << QString::number(solution.adotc0[i]));
                 }
                 break;
             }
@@ -215,7 +235,8 @@ void guimain::on_Runbutton_clicked()
                 ui -> varUnit->setText("bar");
                 for (i= sizeof(solution.p0bar)+1; i > 0; i--)
                 {
-                    ui -> varCombo ->insertItems(0,QStringList() << QString::number(solution.p0bar[i]));
+                    ui -> varCombo ->insertItems(0,QStringList()
+                                    << QString::number(solution.p0bar[i]));
                 }
                 break;
             }
@@ -224,19 +245,20 @@ void guimain::on_Runbutton_clicked()
                  ui -> varUnit->setText("degrees Celsius");
                 for (i= sizeof(solution.tempdegc)+1; i > 0; i--)
                 {
-                    ui -> varCombo ->insertItems(0,QStringList() << QString::number(solution.tempdegc[i]));
+                    ui -> varCombo ->insertItems(0,QStringList()
+                                    << QString::number(solution.tempdegc[i]));
                 }
                 break;
             }
         }
 
-        //Plots solution
+        //  Plots solution
         plotHandler(solution);
 
     }
     else
     {
-        //Create dialog and warn users that folders can't be found
+        //  Create dialog and warn users that folders can't be found
         dialog *e = new dialog;
         switch(exists)
         {
@@ -265,32 +287,86 @@ void guimain::plotHandler(Solution solution)
     {
         case 0:
         {
-            plotResults(solution.adotc0, solution.decompression, "Decompression factor vs non-dimensional speed", "Non-dimensional speed", "Decompression factor",0);
-            plotResults(solution.adotc0, solution.lambda, "Outflow length vs non-dimensional speed", "Non-dimensional speed", "Outflow length",0);
-            plotResults(solution.adotc0, solution.m, "Support factor vs non-dimensional speed", "Non-dimensional speed", "Support factor",0);
-            plotResults(solution.adotc0, solution.alpha, "Speed factor vs non-dimensional speed", "Non-dimensional speed", "Speed factor",0);
-            plotResults(solution.adotc0, solution.gg0, "Non-dimensional crack driving force vs non-dimensional speed", "Non-dimensional speed", "Non-dimensional crack driving force",0);
-            plotResults(solution.adotc0, solution.gtotal, "Crack driving force vs non-dimensional speed", "Non-dimensional speed", "Crack driving force",0);
+            plotResults(solution.adotc0, solution.decompression,
+                        "Decompression factor vs non-dimensional speed",
+                        "Non-dimensional speed",
+                        "Decompression factor",0);
+            plotResults(solution.adotc0, solution.lambda,
+                        "Outflow length vs non-dimensional speed",
+                        "Non-dimensional speed",
+                        "Outflow length",0);
+            plotResults(solution.adotc0, solution.m,
+                        "Support factor vs non-dimensional speed",
+                        "Non-dimensional speed",
+                        "Support factor",0);
+            plotResults(solution.adotc0, solution.alpha,
+                        "Speed factor vs non-dimensional speed",
+                        "Non-dimensional speed",
+                        "Speed factor",0);
+            plotResults(solution.adotc0, solution.gg0,
+                        "Non-dimensional crack driving force vs non-dimensional speed",
+                        "Non-dimensional speed",
+                        "Non-dimensional crack driving force",0);
+            plotResults(solution.adotc0, solution.gtotal,
+                        "Crack driving force vs non-dimensional speed",
+                        "Non-dimensional speed",
+                        "Crack driving force",0);
             break;
         }
         case 1:
         {
-            plotResults(solution.p0bar, solution.decompression, "Decompression factor vs initial pressure", "Initial pressure", "Decompression factor",0);
-            plotResults(solution.p0bar, solution.lambda, "Outflow length vs initial pressure", "Initial pressure", "Outflow length",0);
-            plotResults(solution.p0bar, solution.m, "Support factor vs initial pressure", "Initial pressure", "Support factor",0);
-            plotResults(solution.p0bar, solution.alpha, "Speed factor vs initial pressure", "Initial pressure", "Speed factor",0);
-            plotResults(solution.p0bar, solution.gg0, "Non-dimensional crack driving force vs initial pressure", "Initial pressure", "Non-dimensional crack driving force",0);
-            plotResults(solution.p0bar, solution.gtotal, "Crack driving force vs initial pressure", "Initial pressure", "Crack driving force",0);
+            plotResults(solution.p0bar, solution.decompression,
+                        "Decompression factor vs initial pressure",
+                        "Initial pressure",
+                        "Decompression factor",0);
+            plotResults(solution.p0bar, solution.lambda,
+                        "Outflow length vs initial pressure",
+                        "Initial pressure",
+                        "Outflow length",0);
+            plotResults(solution.p0bar, solution.m,
+                        "Support factor vs initial pressure",
+                        "Initial pressure",
+                        "Support factor",0);
+            plotResults(solution.p0bar, solution.alpha,
+                        "Speed factor vs initial pressure",
+                        "Initial pressure",
+                        "Speed factor",0);
+            plotResults(solution.p0bar, solution.gg0,
+                        "Non-dimensional crack driving force vs initial pressure",
+                        "Initial pressure",
+                        "Non-dimensional crack driving force",0);
+            plotResults(solution.p0bar, solution.gtotal,
+                        "Crack driving force vs initial pressure",
+                        "Initial pressure",
+                        "Crack driving force",0);
             break;
         }
         case 2:
         {
-            plotResults(solution.tempdegc, solution.decompression, "Decompression factor vs temperature", "Temperature", "Decompression factor",0);
-            plotResults(solution.tempdegc, solution.lambda, "Outflow length vs temperature", "Temperature", "Outflow length",0);
-            plotResults(solution.tempdegc, solution.m, "Support factor vs temperature", "Temperature", "Support factor",0);
-            plotResults(solution.tempdegc, solution.alpha, "Speed factor vs temperature", "Temperature", "Speed factor",0);
-            plotResults(solution.tempdegc, solution.gg0, "Non-dimensional crack driving force vs temperature", "Temperature", "Non-dimensional crack driving force",0);
-            plotResults(solution.tempdegc, solution.gtotal, "Crack driving force vs temperature", "Temperature", "Crack driving force",0);
+            plotResults(solution.tempdegc, solution.decompression,
+                        "Decompression factor vs temperature",
+                        "Temperature",
+                        "Decompression factor",0);
+            plotResults(solution.tempdegc, solution.lambda,
+                        "Outflow length vs temperature",
+                        "Temperature",
+                        "Outflow length",0);
+            plotResults(solution.tempdegc, solution.m,
+                        "Support factor vs temperature",
+                        "Temperature",
+                        "Support factor",0);
+            plotResults(solution.tempdegc, solution.alpha,
+                        "Speed factor vs temperature",
+                        "Temperature",
+                        "Speed factor",0);
+            plotResults(solution.tempdegc, solution.gg0,
+                        "Non-dimensional crack driving force vs temperature",
+                        "Temperature",
+                        "Non-dimensional crack driving force",0);
+            plotResults(solution.tempdegc, solution.gtotal,
+                        "Crack driving force vs temperature",
+                        "Temperature",
+                        "Crack driving force",0);
             break;
         }
     }
@@ -298,17 +374,29 @@ void guimain::plotHandler(Solution solution)
     //Plots crack profile in colours according to whether the method converged or not
     if(solution.no_crack_opening[solution.k])
     {
-        plotProfiles(solution.z, solution.w[solution.k], "Crack displacement profile", "Distance behind crack tip", "Crack opening displacement",0,1);
+        plotProfiles(solution.z, solution.w[solution.k],
+                        "Crack displacement profile",
+                        "Distance behind crack tip",
+                        "Crack opening displacement",0,1);
     }
     else
     {
-        plotProfiles(solution.z, solution.w[solution.k], "Crack displacement profile", "Distance behind crack tip", "Crack opening displacement",0,0);
+        plotProfiles(solution.z, solution.w[solution.k],
+                        "Crack displacement profile",
+                        "Distance behind crack tip",
+                        "Crack opening displacement",0,0);
     }
 }
 
 
 //Plots the crack profiles using the qtcustomplot class
-void guimain::plotProfiles(vector<double> x, vector<double> y, string title, string xtitle, string ytitle, char savestate, char valid)
+void guimain::plotProfiles(vector<double> x,
+                           vector<double> y,
+                           string title,
+                           string xtitle,
+                           string ytitle,
+                           char savestate,
+                           char valid)
 {
 
     extern File file;
@@ -357,7 +445,12 @@ void guimain::plotProfiles(vector<double> x, vector<double> y, string title, str
 }
 
 //Plots the results graphs using the qtcustomplot class
-void guimain::plotResults(vector<double> x, vector<double> y, string title, string xtitle, string ytitle, char savestate)
+void guimain::plotResults(vector<double> x,
+                          vector<double> y,
+                          string title,
+                          string xtitle,
+                          string ytitle,
+                          char savestate)
 {
     extern File file;
 
@@ -434,7 +527,7 @@ Parameters guimain::update()
     return temp;
 }
 
-//The following function implement the logic required for the checkboxes in the GUI
+//  The following function implement the logic required for the checkboxes in the GUI
 
 void guimain::on_fs_clicked()
 {
@@ -594,27 +687,45 @@ void guimain::on_yCombo_activated(int index)
                 switch (index)
                 {
                     case 1:{
-                        plotResults(solution.adotc0, solution.decompression, "Decompression factor vs non-dimensional speed", "Non-dimensional speed", "Decompression factor",0);
+                        plotResults(solution.adotc0, solution.decompression,
+                        "Decompression factor vs non-dimensional speed",
+                        "Non-dimensional speed",
+                        "Decompression factor",0);
                         break;
                           }
                     case 2:{
-                        plotResults(solution.adotc0, solution.lambda, "Outflow length vs non-dimensional speed", "Non-dimensional speed", "Outflow length",0);
+                        plotResults(solution.adotc0, solution.lambda,
+                        "Outflow length vs non-dimensional speed",
+                        "Non-dimensional speed",
+                        "Outflow length",0);
                         break;
                           }
                     case 3:{
-                        plotResults(solution.adotc0, solution.m, "Support factor vs non-dimensional speed", "Non-dimensional speed", "Support factor",0);
+                        plotResults(solution.adotc0, solution.m,
+                        "Support factor vs non-dimensional speed",
+                        "Non-dimensional speed",
+                        "Support factor",0);
                         break;
                           }
                     case 4:{
-                        plotResults(solution.adotc0, solution.alpha, "Speed factor vs non-dimensional speed", "Non-dimensional speed", "Speed factor",0);
+                        plotResults(solution.adotc0, solution.alpha,
+                        "Speed factor vs non-dimensional speed",
+                        "Non-dimensional speed",
+                        "Speed factor",0);
                         break;
                           }
                     case 5:{
-                        plotResults(solution.adotc0, solution.gg0, "Non-dimensional crack driving force vs non-dimensional speed", "Non-dimensional speed", "Non-dimensional crack driving force",0);
+                        plotResults(solution.adotc0, solution.gg0,
+                        "Non-dimensional crack driving force vs non-dimensional speed",
+                        "Non-dimensional speed",
+                        "Non-dimensional crack driving force",0);
                         break;
                           }
                     case 6:{
-                        plotResults(solution.adotc0, solution.gtotal, "Crack driving force vs non-dimensional speed", "Non-dimensional speed", "Crack driving force",0);
+                        plotResults(solution.adotc0, solution.gtotal,
+                        "Crack driving force vs non-dimensional speed",
+                        "Non-dimensional speed",
+                        "Crack driving force",0);
                         break;
                           }
                 }
@@ -625,27 +736,45 @@ void guimain::on_yCombo_activated(int index)
                 switch (index)
                 {
                     case 1:{
-                        plotResults(solution.p0bar, solution.decompression, "Decompression factor vs initial pressure", "Initial pressure", "Decompression factor",0);
+                        plotResults(solution.p0bar, solution.decompression,
+                        "Decompression factor vs initial pressure",
+                        "Initial pressure",
+                        "Decompression factor",0);
                         break;
                           }
                     case 2:{
-                        plotResults(solution.p0bar, solution.lambda, "Outflow length vs initial pressure", "Initial pressure", "Outflow length",0);
+                        plotResults(solution.p0bar, solution.lambda,
+                        "Outflow length vs initial pressure",
+                        "Initial pressure",
+                        "Outflow length",0);
                         break;
                           }
                     case 3:{
-                        plotResults(solution.p0bar, solution.m, "Support factor vs initial pressure", "Initial pressure", "Support factor",0);
+                        plotResults(solution.p0bar, solution.m,
+                        "Support factor vs initial pressure",
+                        "Initial pressure",
+                        "Support factor",0);
                         break;
                           }
                     case 4:{
-                        plotResults(solution.p0bar, solution.alpha, "Speed factor vs initial pressure", "Initial pressure", "Speed factor",0);
+                        plotResults(solution.p0bar, solution.alpha,
+                        "Speed factor vs initial pressure",
+                        "Initial pressure",
+                        "Speed factor",0);
                         break;
                           }
                     case 5:{
-                        plotResults(solution.p0bar, solution.gg0, "Non-dimensional crack driving force vs initial pressure", "Initial pressure", "Non-dimensional crack driving force",0);
+                        plotResults(solution.p0bar, solution.gg0,
+                        "Non-dimensional crack driving force vs initial pressure",
+                        "Initial pressure",
+                        "Non-dimensional crack driving force",0);
                         break;
                           }
                     case 6:{
-                        plotResults(solution.p0bar, solution.gtotal, "Crack driving force vs initial pressure", "Initial pressure", "Crack driving force",0);
+                        plotResults(solution.p0bar, solution.gtotal,
+                        "Crack driving force vs initial pressure",
+                        "Initial pressure",
+                        "Crack driving force",0);
                         break;
                           }
                 }
@@ -656,27 +785,45 @@ void guimain::on_yCombo_activated(int index)
                 switch (index)
                 {
                     case 1:{
-                        plotResults(solution.tempdegc, solution.decompression, "Decompression factor vs temperature", "Temperature", "Decompression factor",0);
+                        plotResults(solution.tempdegc, solution.decompression,
+                        "Decompression factor vs temperature",
+                        "Temperature",
+                        "Decompression factor",0);
                         break;
                           }
                     case 2:{
-                        plotResults(solution.tempdegc, solution.lambda, "Outflow length vs temperature", "Temperature", "Outflow length",0);
+                        plotResults(solution.tempdegc, solution.lambda,
+                        "Outflow length vs temperature",
+                        "Temperature",
+                        "Outflow length",0);
                         break;
                           }
                     case 3:{
-                        plotResults(solution.tempdegc, solution.m, "Support factor vs temperature", "Temperature", "Support factor",0);
+                        plotResults(solution.tempdegc, solution.m,
+                        "Support factor vs temperature",
+                        "Temperature",
+                        "Support factor",0);
                         break;
                           }
                     case 4:{
-                        plotResults(solution.tempdegc, solution.alpha, "Speed factor vs temperature", "Temperature", "Speed factor",0);
+                        plotResults(solution.tempdegc, solution.alpha,
+                        "Speed factor vs temperature",
+                        "Temperature",
+                        "Speed factor",0);
                         break;
                           }
                     case 5:{
-                        plotResults(solution.tempdegc, solution.gg0, "Non-dimensional crack driving force vs temperature", "Temperature", "Non-dimensional crack driving force",0);
+                        plotResults(solution.tempdegc, solution.gg0,
+                        "Non-dimensional crack driving force vs temperature",
+                        "Temperature",
+                        "Non-dimensional crack driving force",0);
                         break;
                           }
                     case 6:{
-                        plotResults(solution.tempdegc, solution.gtotal, "Crack driving force vs temperature", "Temperature", "Crack driving force",0);
+                        plotResults(solution.tempdegc, solution.gtotal,
+                        "Crack driving force vs temperature",
+                        "Temperature",
+                        "Crack driving force",0);
                         break;
                           }
                 }

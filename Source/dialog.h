@@ -27,11 +27,37 @@ public:
 
     //Updates text on dialog to provide user with message
     void warning(string title);
-    void warning(string title, double value);
-    void warning(string title, double value, string title1, double value1);
-    void warning(string title, double value, string title1, double value1, string title2, double value2);
-    void warning(string title, double value, string title1, double value1, string title2, double value2, string title3, double value3);
-    void warning(string title, string title1, double value1, string title2, double value2, string title3, double value3, string title4, double value4, string title5, double value5);
+    void warning(string title,
+                 double value);
+    void warning(string title,
+                 double value,
+                 string title1,
+                 double value1);
+    void warning(string title,
+                 double value,
+                 string title1,
+                 double value1,
+                 string title2,
+                 double value2);
+    void warning(string title,
+                 double value,
+                 string title1,
+                 double value1,
+                 string title2,
+                 double value2,
+                 string title3,
+                 double value3);
+    void warning(string title,
+                 string title1,
+                 double value1,
+                 string title2,
+                 double value2,
+                 string title3,
+                 double value3,
+                 string title4,
+                 double value4,
+                 string title5,
+                 double value5);
 
 private:
     Ui::dialog *ui;

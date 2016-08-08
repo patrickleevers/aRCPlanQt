@@ -169,8 +169,8 @@ double OutflowProcess::tStarWhileUnchoked(double xUnch,
     //  to ambient pressure.
 	double gMinus12 =  (Constants::gamma - 1) / 2;
 //    double watchMe = pow(p_abs_over_p_amb, -gMinus12 / Constants::gamma)
-//                       / sqrt(gMinus12)
-//                        * (xFunction(xUnch) - xFunction(x(p_abs_over_p_amb)));
+//                      / sqrt(gMinus12)
+//                      * (xFunction(xUnch) - xFunction(x(p_abs_over_p_amb)));
     double watchMe = xFunction(xUnch);
     double temp = xFunction(x(p_abs_over_p_amb));
     watchMe -= temp;

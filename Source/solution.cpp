@@ -1,10 +1,11 @@
-//     aRCPLan
-//     Copyright (c) [2016] [Fraser Edwards][Dr Patrick Leevers]
-//     aRCPlan may be freely distributed under the MIT license.
-//     For the underlying model, see http://www.sciencedirect.com/science/article/pii/S0013794412003530
+//  aRCPLan
+//  Copyright (c) [2016] [Fraser Edwards][Dr Patrick Leevers]
+//  aRCPlan may be freely distributed under the MIT license.
+//  For the underlying model, see
+//  http://www.sciencedirect.com/science/article/pii/S0013794412003530
 
-//     Class which collects solution values in to one object for easy storage and access
-//     Collects solution values as well as crack profiles for access later
+//  Class which collects solution values into one object for easy storage and access
+//  Collects solution values as well as crack profiles for access later
 
 #include <iostream>
 #include <iomanip>
@@ -40,7 +41,7 @@ Solution::Solution()
 
 }
 
-//Clears all values within the solution class and resizes their arrays to 1
+//  Clears all values within the solution class and resizes their arrays to 1
 void Solution::clear()
 {
     soln=0;
@@ -91,23 +92,23 @@ void Solution::clear()
 
 }
 
-//Sets up displacement values for crack profiles
+//  Sets up displacement values for crack profiles
 void Solution::displacement(Parameters &parameters)
 {
     n = (parameters.elements_in_l * (parameters.lambda+2))+1;
     vector<double> row;
 
-    //Creates column (used as row) vector
+    //  Creates column (used as row) vector
     for(i = 0; i < n; i++ )
     {
         row.push_back(0.0);
     }
-    //Stores vector in vector to provide a "Matrix"
+    //  Stores vector in vector to provide a "Matrix"
     for(i = 0; i < parameters.range_number; i++)
     {
         w.push_back(row);
     }
-    //Generates displacement for crack profile
+    //  Generates displacement for crack profile
     for(i = 1; i < n; i++)
     {
         z.push_back(double(i)/double(parameters.elements_in_l));
@@ -115,8 +116,8 @@ void Solution::displacement(Parameters &parameters)
 
 }
 
-//Collects the crack profile for each solution, writing it to the
-//already created matrix
+//  Collects the crack profile for each solution, writing it to the
+//  already created matrix
 void Solution::collectProfile(const vector<double> vptras, const int ls)
 {
     k++;
@@ -128,8 +129,8 @@ void Solution::collectProfile(const vector<double> vptras, const int ls)
 
 }
 
-//Collects the values from the arguments provided, storing them into
-//a single solution object
+//  Collects the values from the arguments provided, storing them into
+//  a single solution object
 void Solution::collect(const double adotc0s,
                        const double p0bars,
                        const double tempdegcs,
@@ -167,13 +168,13 @@ void Solution::collect(const double adotc0s,
     gkb.push_back(gkbs);
 	g0.push_back(g0s);
 
-    //Flips values so that they make sense under the headings of the tables
+    //  Flips values so that they make sense under the headings of the tables
     no_crack_opening.push_back(!no_crack_openings);
     closure_is_converged.push_back(!closure_is_convergeds);
     lambda_is_converged.push_back(!lambda_is_convergeds);
     iterations.push_back(iterationss);
 
-    //Removes spurious errors, need to find source of these
+    //  Removes spurious errors, need to find source of these
     if (gg0s < 1000)
     {gg0.push_back(gg0s);}
     else
@@ -183,5 +184,4 @@ void Solution::collect(const double adotc0s,
     {gtotal.push_back(gtotals);}
     else
     {gtotal.push_back(0.0);}
-	
 }

@@ -24,24 +24,24 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
-    //Find application directory
+    //  Find application directory
     file.directory = a.applicationDirPath().toStdString();
 
-    //Alters directory to outside the application bundle
+    //  Alters directory to outside the application bundle
     file.correct();
 
-    //Create initial parameters to populate the GUI
+    //  Create initial parameters to populate the GUI
     Parameters initial;
 
-    //Create main form guimain
+    //  Create main form guimain
     guimain b;
     b.setnames(initial,0);
     b.setWindowTitle("aRCPlan");
 
-    //Show window
+    //  Show window
     b.show();
 
-    //Wait for signals from GUI
+    //  Wait for signals from GUI
     return a.exec();
 
 }

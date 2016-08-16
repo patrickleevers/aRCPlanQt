@@ -4,8 +4,8 @@
 //  For the underlying model, see
 //  http://www.sciencedirect.com/science/article/pii/S0013794412003530
 
-//  Class which collects solution values into one object for easy storage and access
-//  Collects solution values as well as crack profiles for access later
+//  Class which collects solution values, as well as crack profiles,
+//  into a single object for easy storage and access later.
 
 #include <iostream>
 #include <iomanip>
@@ -15,7 +15,7 @@
 //Null constructor
 Solution::Solution()
 {
-    soln=0;
+    soln = 0;
     adotc0.push_back(0.0);
     p0bar.push_back(0.0);
     tempdegc.push_back(0.0);
@@ -38,7 +38,6 @@ Solution::Solution()
     lambda_is_converged.push_back(1);
     closure_is_converged.push_back(1);
     iterations.push_back(0);
-
 }
 
 //  Clears all values within the solution class and resizes their arrays to 1
@@ -89,44 +88,39 @@ void Solution::clear()
     closure_is_converged.resize(1);
     iterations.clear();
     iterations.resize(1);
-
 }
 
 //  Sets up displacement values for crack profiles
 void Solution::displacement(Parameters &parameters)
 {
-    n = (parameters.elements_in_l * (parameters.lambda+2))+1;
+//  n = (parameters.elements_in_l * (parameters.lambda + 2)) + 1;
+    n = parameters.elements_in_l * 3;
     vector<double> row;
 
-    //  Creates column (used as row) vector
-    for(i = 0; i < n; i++ )
+    //  Create column (used as row) vector
+    for (i = 0; i < n; i++ )
     {
         row.push_back(0.0);
     }
     //  Stores vector in vector to provide a "Matrix"
-    for(i = 0; i < parameters.range_number; i++)
+    for (i = 0; i < parameters.range_number; i++)
     {
         w.push_back(row);
     }
-    //  Generates displacement for crack profile
-    for(i = 1; i < n; i++)
-    {
+    //  Generate axial coordinate from crack tip
+    for (i = 1; i < n; i++)
         z.push_back(double(i)/double(parameters.elements_in_l));
-    }
-
 }
 
-//  Collects the crack profile for each solution, writing it to the
-//  already created matrix
+//  For each solution k, collect the crack profile and write it into the matrix
+//  already created
 void Solution::collectProfile(const vector<double> vptras, const int ls)
 {
     k++;
-    //Read values from input crack profile and writes to the matrix
-    for(i = 0; i <= ls; i++)
+    for (i = 0; i <= ls; i++)
     {
         w[k][i]=vptras[i];
     }
-
 }
 
 //  Collects the values from the arguments provided, storing them into

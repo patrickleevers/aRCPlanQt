@@ -198,17 +198,19 @@ void File::writeResults()
 
     file_name = "Results.csv";
 
-    out.open((file.directory + "Results/" + file_name).c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
+    out.open((file.directory + "Results/" + file_name).c_str(),
+             std::fstream::in | std::fstream::out | std::fstream::trunc);
 
-    out << "Normalised Crack Speed,Initial pressure, Temperature, Decomp. factor,Speed factor,Support factor,Outflow length,Flaring,Irwin Corten force,Crack driving force,Normalised total,"
+    out << "Normalised Crack Speed,"
+           "Initial pressure, Temperature, Decomp. factor,Speed factor,Support factor,Outflow length,Flaring,Irwin Corten force,Crack driving force,Normalised total,"
             << "CrackOpening, Converged, Iterations \n";
 
     for(i=1; i<solution.soln+1;i++)
     {
         //Write solution line for a given independent variable value
         out << solution.adotc0[i] << ","
-            << solution.p0bar[i] << ","
-            << solution.tempdegc[i] << ","
+                << solution.p0bar[i] << ","
+                << solution.tempdegc[i] << ","
                 << solution.decompression[i] << ","
                 << solution.alpha[i] << ","
                 << solution.m[i] << ","
@@ -226,7 +228,8 @@ void File::writeResults()
 
     file_name = "Crack Profiles.csv";
 
-    out.open((file.directory + "Results/" +file_name).c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
+    out.open((file.directory + "Results/" +file_name).c_str(),
+             std::fstream::in | std::fstream::out | std::fstream::trunc);
 
     out << "zeta" << ",";
 
@@ -406,7 +409,8 @@ void File::writeLineCSV(string title, ofstream &out)
 void File::writeHeaders(string temp)
 {
     file_name = temp;
-    out.open((directory + file_name).c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
+    out.open((directory + file_name).c_str(),
+             std::fstream::in | std::fstream::out | std::fstream::app);
 
     writeLineCSV("\n", out);
 
@@ -465,7 +469,8 @@ void File::logPrepare(Parameters temp)
 //Writes single line using the current log values
 void File::writeLogLine(int newline)
 {
-    out.open((directory + file_name).c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
+    out.open((directory + file_name).c_str(),
+             std::fstream::in | std::fstream::out | std::fstream::app);
 
     //Reset count and create new line
     if(newline)
@@ -524,6 +529,12 @@ void File::collect(Creep creep)
 void File::collect(Backfill backfill)
 {
     effective_density =  backfill.effective_density;
+    writeLogLine(0);
+}
+
+void File::collect(WaterContent watercontent)
+{
+    effective_density =  watercontent.effective_density;
     writeLogLine(0);
 }
 

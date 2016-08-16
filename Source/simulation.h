@@ -24,13 +24,13 @@ signals:
 
 private:
 	
-	int i;
+    int i;
     double adotc0;
 	
 public:	
 	
     //  Null constructor
-	Simulation();
+    Simulation();
 
     //  Iteration function, parameters as arguments, returns solution
     Solution run(Parameters parameters);

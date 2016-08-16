@@ -6,20 +6,27 @@
 
 #include "cmath"
 #include "Backfill.h"
+#include "constants.h"
 
-//Null constructor
+//  Null constructor
 Backfill::Backfill()
 {
-    effective_density=0.0;
+    ke_factor = 0.0;
+    effective_density = 0.0;
 }
 
 //  Constructor taking parameters as arguments.
-//  Computes an effective density ratio for backfill,
-//  to be added to that of pipe
+//  Computes an effective density for backfill, to be added to that of pipe
 Backfill::Backfill(const Parameters parameters)
 {
-    effective_density = (2.0 * parameters.diameter + parameters.backfill_depth)
-                / 4.0 / parameters.diameter / (1.0 - 1.0 / parameters.sdr)
-                * parameters.backfill_density;
+    ke_factor = 0.0;    //  KE / unit
+    effective_density = 0.0;
+    if (parameters.is_backfilled == 2)
+    {
+        ke_factor = parameters.backfill_density / Constants::pi
+            * log(1.0 + 2.0 * parameters.backfill_depth / parameters.diameter);
+        effective_density = ke_factor / Constants::c2
+                * pow(parameters.sdr, 2) / (parameters.sdr - 1.0);
+        ke_factor *= pow(parameters.diameter, 2) / 4.0e6;
+    }
 }   //  end constructor
-

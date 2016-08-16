@@ -16,7 +16,8 @@
 #define _WATERCONTENT_H
 
 #include "Parameters.h"
-#include "watercontent.h"
+#include "liquidcontent.h"
+#include "Constants.h"
 
 class WaterContent
 {
@@ -27,6 +28,9 @@ public:
     //  Constructor
     //  Calculates effective density
     WaterContent(const Parameters parameters);
+    //  Constructor taking parameters as arguments
+    //  Using the 'gas sector' model, represents the water as an
+    //  effective density ratio lumped at the wall, to be added to that of pipe.
 
     double effective_density;
 

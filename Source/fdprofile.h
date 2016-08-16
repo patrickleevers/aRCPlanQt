@@ -19,13 +19,13 @@
 class FDprofile
 {
 	public:
-		int l;
+        int profile_plot_points;
 		vector<double> zeta;
         vector<double> vptra;
         FDprofile();            // Null constructor
         FDprofile(const double alpha[2],
                     const double m[2],
-                    double zeta_at_max_dzetadz,
+                    double zeta_at_max_dzetadz, //  backfill ejection point
                     double residualpressure,
                     short elementsPerUnitLength,
                     short nodeAtClosure);
@@ -58,7 +58,7 @@ class FDprofile
                                    double& vStarDashBackfillEject);
 
 private:
-    short arraySize;            //  Total number of active nodes
+    int arraySize;              //  Total number of active (nonzero COD) nodes
     double* v_ptr;              //  Vector of matrix equation RHS elmnts
                                 //  then, after solution, vStar elmnts
     short elementsPerUnitLength;	//  in outflow length (0 < zeta < 1)

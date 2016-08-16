@@ -22,8 +22,8 @@
 //      zeta = z/L,
 //  and the solution is obtained using an external finite difference method.
 
-//  Energy-based fracture mechanics uses properties of the COD profile to evaluate
-//  the crack driving force.
+//  Energy-based fracture mechanics uses properties of the COD profile
+//  to evaluate the crack driving force.
 
 #ifndef BeamModelH
 #define BeamModelH
@@ -32,12 +32,14 @@
 
 #include "fdprofile.h"
 #include "Backfill.h"
-#include "watercontent.h"
+#include "liquidcontent.h"
 #include "Creep.h"
 
 class BeamModel
 {
 public:	
+    FDprofile beam_profile;
+
     double alpha[2];
     double baffle_leakage_area;
     double deltadstar;
@@ -48,7 +50,7 @@ public:
     double lambda_last;
     short iterations;
     short no_crack_opening;
-    double gs1_ic, gs1_resid, gue2, gs2, gk2_bf, gk2,  g_total;
+    double gs1_ic, gs1_resid, gue2, gs2, gk2_bf, gk2, g_total;
 //  FIXME Bodge temp variables
     double gs1, gue, gsb, gkb, g0, gg0, gtotal;
 
@@ -59,7 +61,7 @@ public:
     double dynamic_shear_modulus;
     double error;
     double error_last;
-    double lambda;              //  Ratio of outflow length to mean diameter
+    double lambda;          //  Ratio of outflow length to mean diameter
     double lambda_factor;
     double p1bar;
     double p1p0r;
@@ -71,7 +73,7 @@ public:
     double v00;
     double v0;
 
-    double vStarRes;    //  FIXME
+    double vStarRes;        //  FIXME
 
     double w_2;             //  Crack opening displacement at outflow point
     double w_max;           //  Absolute maximum crack opening displacement
@@ -86,6 +88,8 @@ public:
     double z_backfilled;
     double zeta_backfill_ejection;
 
+    int l;
+
     short node_at_closure;
     short lambda_is_converged;
     short closure_is_converged;
@@ -93,12 +97,10 @@ public:
     vector<double> crack_displacement;
     vector<double> zeta;
 
-
 //  Null constructor
     BeamModel();
 
-//  Constructs dynamic beam-on-elastic-foundation model of a
-//  specific pipe RCP problem
+//  Construct dynamic beam-on-elastic-foundation model of pipe system
     BeamModel(const Parameters parameters);
 
 //  Clears all values within beammodel
@@ -110,16 +112,18 @@ public:
                const WaterContent watercontent,
                const Creep creep);
 
-//  Calculate dimensionless foundation stiffness m[0] with backfill, [1] without
+//  Calculate dimensionless foundation stiffness with backfill m[0], without [1]
     void stiffness();
 
 //  Calculate dimensionless crack speed alpha[0] with backfill, [1] without
     void crackSpeed(const Parameters parameters);
 
-//  Implements boundary conditions on the beam model and controls its solution
+
+//  Implement boundary conditions on the beam model and control its solution
 //  by iteration, using a gas discharge model to determine the outflow length
-    void SolveForCrackProfile(Parameters parameters,
-                              Creep creep);
+    void SolveForCrackProfile(const Parameters parameters,
+                              const Creep creep);
+
 
 //  Finds final crack profile, and extracts converted physical parameters
 //  needed to evaluate crack driving force
@@ -127,8 +131,8 @@ public:
                  Creep creep);
 
 //
-    void crackDrivingForce(FDprofile final,
-                           Parameters parameters,
+    void crackDrivingForce(Parameters parameters,
+                           Backfill backfill,
                            Creep creep);
 private:
     double radius;

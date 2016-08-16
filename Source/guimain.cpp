@@ -34,154 +34,152 @@ guimain::~guimain()
 }
 
 
-//Sets initial values using stored values
-//including checkboxes and dropdowns
+// Sets initial values, including checkboxes and dropdowns, using stored values
 void guimain::setnames(Parameters parameters, char dropdown)
 {
 
-//Set up palettes
-QPalette *gray = new QPalette();
-gray->setColor(QPalette::Base,Qt::gray);
-gray->setColor(QPalette::Text,Qt::darkGray);
+    //  Set up palettes
+    QPalette *gray = new QPalette();
+    gray->setColor(QPalette::Base,Qt::gray);
+    gray->setColor(QPalette::Text,Qt::darkGray);
 
-QPalette *white = new QPalette();
-white->setColor(QPalette::Base,Qt::white);
-white->setColor(QPalette::Text,Qt::black);
+    QPalette *white = new QPalette();
+    white->setColor(QPalette::Base,Qt::white);
+    white->setColor(QPalette::Text,Qt::black);
 
-extern File file;
+    extern File file;
 
-if(parameters.fullscale)
-{
-    ui->fs->setCheckState(Qt::Checked);
-    ui->s4->setCheckState(Qt::Unchecked);
+    if(parameters.fullscale)
+    {
+        ui->fs->setCheckState(Qt::Checked);
+        ui->s4->setCheckState(Qt::Unchecked);
+    }
+    else
+    {
+        ui->fs->setCheckState(Qt::Unchecked);
+        ui->s4->setCheckState(Qt::Checked);
+    }
+
+    if  (parameters.is_backfilled)
+       {ui->backfill->setCheckState(Qt::Checked);}
+    else
+       {ui->backfill->setCheckState(Qt::Unchecked);}
+
+    if(parameters.outflow_model_on)
+       {ui->fixedlength->setCheckState(Qt::Checked);}
+    else
+       {ui->fixedlength->setCheckState(Qt::Unchecked);}
+
+    ui -> materialname -> setEditable(true);
+    ui -> materialname -> lineEdit() -> setReadOnly(false);
+    ui -> materialname -> lineEdit() -> setAlignment(Qt::AlignRight);
+
+    ui -> pipename -> setEditable(true);
+    ui -> pipename -> lineEdit() -> setReadOnly(false);
+    ui -> pipename -> lineEdit() -> setAlignment(Qt::AlignRight);
+
+    ui -> parameter -> setEditable(true);
+    ui -> parameter -> lineEdit() -> setReadOnly(true);
+    ui -> parameter -> lineEdit() -> setAlignment(Qt::AlignRight);
+
+    //  If dropdown is empty fill with names, alternatively change index
+    if(dropdown==0)
+    {
+        ui -> materialname ->insertItems(0, QStringList() << "Soft PE80"
+                                                        << "Generic PE100"
+                                                        << "Soft PE100"
+                                                        << "Generic PE1"
+                                                        << "Generic PE2"
+                                                        << "Test");
+        ui -> pipename ->insertItems(0, QStringList() << "250mm_SDR11"
+                                                        << "250mm_SDR17"
+                                                        << "110mm_SDR11"
+                                                        << "110mm_SDR17"
+                                                        << "63mm_SDR11");
+        ui -> parameter ->insertItems(0, QStringList() << "Normalised Crack Speed"
+                                                        << "Initial Pressure"
+                                                        << "Test Temperature");
+        ui -> varCombo ->insertItems(0,QStringList() << "");
+        ui -> yCombo -> insertItems(0,QStringList() << "");
+
+    }
+    else
+    {
+        ui -> materialname ->lineEdit()->setText(QString::fromStdString(parameters.matid));
+        ui -> pipename ->lineEdit()->setText(QString::fromStdString(parameters.pipeid));
+    }
+
+    ui -> density -> setAlignment(Qt::AlignRight);
+    ui -> density->setText(QString::number(parameters.density));
+
+    ui -> dynamicmodulus -> setAlignment(Qt::AlignRight);
+    ui -> dynamicmodulus ->setText(QString::number(parameters.edyn0degc));
+
+    ui -> deltadynamicmodulus -> setAlignment(Qt::AlignRight);
+    ui -> deltadynamicmodulus ->setText(QString::number(parameters.dedyndt));
+
+    ui -> creepmodulus -> setAlignment(Qt::AlignRight);
+    ui -> creepmodulus -> setText(QString::number(parameters.creep_modulus));
+
+    ui -> dynpoissonratio -> setAlignment(Qt::AlignRight);
+    ui -> dynpoissonratio -> setText(QString::number(parameters.poisson));
+
+    ui -> from -> setAlignment(Qt::AlignRight);
+    ui -> from -> setText(QString::number(0));
+
+    ui -> to -> setAlignment(Qt::AlignRight);
+    ui -> to -> setText(QString::number(1));
+
+    ui->varTo ->setText("");
+    ui->fromVar->setText("");
+
+    ui -> noofpoints -> setAlignment(Qt::AlignRight);
+    ui -> noofpoints -> setText(QString::number(50));
+
+    ui -> outsidediameter -> setAlignment(Qt::AlignRight);
+    ui -> outsidediameter -> setText(QString::number(parameters.diameter));
+
+    ui -> sdr -> setAlignment(Qt::AlignRight);
+    ui -> sdr -> setText(QString::number(parameters.sdr));
+
+    ui -> groovedepth -> setAlignment(Qt::AlignRight);
+    ui -> groovedepth -> setText(QString::number(parameters.notch_depth));
+
+    ui -> relativediameter -> setAlignment(Qt::AlignRight);
+    ui -> relativediameter -> setText(QString::number(parameters.diameter_creep_ratio));
+
+    ui -> testtemperature -> setAlignment(Qt::AlignRight);
+    ui -> testtemperature -> setText(QString::number(parameters.tempdegc));
+
+    ui ->adotc0 -> setAlignment(Qt::AlignRight);
+    ui ->adotc0 -> setText(QString::number(parameters.adotc0));
+    ui -> adotc0->setReadOnly(true);
+    ui -> adotc0->setPalette(*gray);
+
+    ui -> initialpressure -> setAlignment(Qt::AlignRight);
+    ui -> initialpressure -> setText(QString::number(parameters.p0bar));
+
+
+    ui -> backfilldepth -> setAlignment(Qt::AlignRight);
+    ui -> backfilldepth -> setText(QString::number(parameters.backfill_depth));
+
+    ui -> backfilldensity -> setAlignment(Qt::AlignRight);
+    ui -> backfilldensity -> setText(QString::number(parameters.backfill_density));
+
+    ui -> solidfraction -> setAlignment(Qt::AlignRight);
+    ui -> solidfraction -> setText(QString::number(parameters.solid_inside_pipe));
+
+    ui -> waterfraction -> setAlignment(Qt::AlignRight);
+    ui -> waterfraction -> setText(QString::number(parameters.water_inside_pipe));
+
+    ui -> initiallength -> setAlignment(Qt::AlignRight);
+    ui -> initiallength -> setText(QString::number(parameters.lambda));
+
+    ui -> fdnumber -> setAlignment(Qt::AlignRight);
+    ui -> fdnumber -> setText(QString::number(parameters.elements_in_l));
 }
-else
-{
-    ui->fs->setCheckState(Qt::Unchecked);
-    ui->s4->setCheckState(Qt::Checked);
-}
 
-if(parameters.is_backfilled)
-   {ui->backfill->setCheckState(Qt::Checked);}
-else
-   {ui->backfill->setCheckState(Qt::Unchecked);}
-
-if(parameters.outflow_model_on)
-   {ui->fixedlength->setCheckState(Qt::Checked);}
-else
-   {ui->fixedlength->setCheckState(Qt::Unchecked);}
-
-ui -> materialname -> setEditable(true);
-ui -> materialname -> lineEdit() -> setReadOnly(false);
-ui -> materialname -> lineEdit() -> setAlignment(Qt::AlignRight);
-
-ui -> pipename -> setEditable(true);
-ui -> pipename -> lineEdit() -> setReadOnly(false);
-ui -> pipename -> lineEdit() -> setAlignment(Qt::AlignRight);
-
-ui -> parameter -> setEditable(true);
-ui -> parameter -> lineEdit() -> setReadOnly(true);
-ui -> parameter -> lineEdit() -> setAlignment(Qt::AlignRight);
-
-//If dropdown is empty fill with names, alternatively change index
-if(dropdown==0)
-{
-    ui -> materialname ->insertItems(0, QStringList() << "Soft PE80"
-                                                    << "Generic PE100"
-                                                    << "Soft PE100"
-                                                    << "Generic PE1"
-                                                    << "Generic PE2"
-                                                    << "Test");
-    ui -> pipename ->insertItems(0, QStringList() << "250mm_SDR11"
-                                                    << "250mm_SDR17"
-                                                    << "110mm_SDR11"
-                                                    << "110mm_SDR17"
-                                                    << "63mm_SDR11");
-    ui -> parameter ->insertItems(0, QStringList() << "Normalised Crack Speed"
-                                                    << "Initial Pressure"
-                                                    << "Test Temperature");
-    ui -> varCombo ->insertItems(0,QStringList() << "");
-    ui -> yCombo -> insertItems(0,QStringList() << "");
-
-}
-else
-{
-    ui -> materialname ->lineEdit()->setText(QString::fromStdString(parameters.matid));
-    ui -> pipename ->lineEdit()->setText(QString::fromStdString(parameters.pipeid));
-}
-
-ui -> density -> setAlignment(Qt::AlignRight);
-ui -> density->setText(QString::number(parameters.density));
-
-ui -> dynamicmodulus -> setAlignment(Qt::AlignRight);
-ui -> dynamicmodulus ->setText(QString::number(parameters.edyn0degc));
-
-ui -> deltadynamicmodulus -> setAlignment(Qt::AlignRight);
-ui -> deltadynamicmodulus ->setText(QString::number(parameters.dedyndt));
-
-ui -> creepmodulus -> setAlignment(Qt::AlignRight);
-ui -> creepmodulus -> setText(QString::number(parameters.creep_modulus));
-
-ui -> dynpoissonratio -> setAlignment(Qt::AlignRight);
-ui -> dynpoissonratio -> setText(QString::number(parameters.poisson));
-
-ui -> from -> setAlignment(Qt::AlignRight);
-ui -> from -> setText(QString::number(0));
-
-ui -> to -> setAlignment(Qt::AlignRight);
-ui -> to -> setText(QString::number(1));
-
-ui->varTo ->setText("");
-ui->fromVar->setText("");
-
-ui -> noofpoints -> setAlignment(Qt::AlignRight);
-ui -> noofpoints -> setText(QString::number(50));
-
-ui -> outsidediameter -> setAlignment(Qt::AlignRight);
-ui -> outsidediameter -> setText(QString::number(parameters.diameter));
-
-ui -> sdr -> setAlignment(Qt::AlignRight);
-ui -> sdr -> setText(QString::number(parameters.sdr));
-
-ui -> groovedepth -> setAlignment(Qt::AlignRight);
-ui -> groovedepth -> setText(QString::number(parameters.notch_depth));
-
-ui -> relativediameter -> setAlignment(Qt::AlignRight);
-ui -> relativediameter -> setText(QString::number(parameters.diameter_creep_ratio));
-
-ui -> testtemperature -> setAlignment(Qt::AlignRight);
-ui -> testtemperature -> setText(QString::number(parameters.tempdegc));
-
-ui ->adotc0 -> setAlignment(Qt::AlignRight);
-ui ->adotc0 -> setText(QString::number(parameters.adotc0));
-ui -> adotc0->setReadOnly(true);
-ui -> adotc0->setPalette(*gray);
-
-ui -> initialpressure -> setAlignment(Qt::AlignRight);
-ui -> initialpressure -> setText(QString::number(parameters.p0bar));
-
-
-ui -> backfilldepth -> setAlignment(Qt::AlignRight);
-ui -> backfilldepth -> setText(QString::number(parameters.backfill_depth));
-
-ui -> backfilldensity -> setAlignment(Qt::AlignRight);
-ui -> backfilldensity -> setText(QString::number(parameters.backfill_density));
-
-ui -> solidfraction -> setAlignment(Qt::AlignRight);
-ui -> solidfraction -> setText(QString::number(parameters.solid_inside_pipe));
-
-ui -> waterfraction -> setAlignment(Qt::AlignRight);
-ui -> waterfraction -> setText(QString::number(parameters.water_inside_pipe));
-
-ui -> initiallength -> setAlignment(Qt::AlignRight);
-ui -> initiallength -> setText(QString::number(parameters.lambda));
-
-ui -> fdnumber -> setAlignment(Qt::AlignRight);
-ui -> fdnumber -> setText(QString::number(parameters.elements_in_l));
-
-}
-
-//  Begins the calculation process, calls various functions which eventually provide
+//  Begin the calculation process, calls various functions which eventually provide
 //  a solution and the accompanying outputs
 void guimain::on_Runbutton_clicked()
 {
@@ -189,11 +187,11 @@ void guimain::on_Runbutton_clicked()
     extern File file;
     Parameters edited;
 
-    //Update parameters from GUI
+    //  Update parameters from GUI
     edited = update();
 
-    //Check if folders for results exist
-    //All folders present returns 0
+    //  Check if folders for results exist
+    //  All folders present returns 0
     exists = file.check();
 
     if(!exists)
@@ -201,10 +199,10 @@ void guimain::on_Runbutton_clicked()
         Simulation simulation;
         Solution solution;
 
-        //Run simulation
+        //  Run simulation
         solution = simulation.run(edited);
 
-        //Fill comboboxes
+        //  Fill comboboxes
         ui ->yCombo ->clear();
         ui->varCombo ->clear();
         ui -> yCombo -> insertItems(0, QStringList()
@@ -279,11 +277,11 @@ void guimain::on_Runbutton_clicked()
     }
 }
 
-//Creates, displays and saves the crack and results plot
 void guimain::plotHandler(Solution solution)
+//  Create, display and save the crack and results plots
 {
-    //Plots graphs against different independent variable
-    switch(ui->parameter ->currentIndex())
+    // Plot graphs against different independent variables
+    switch (ui->parameter ->currentIndex())
     {
         case 0:
         {
@@ -371,8 +369,8 @@ void guimain::plotHandler(Solution solution)
         }
     }
 
-    //Plots crack profile in colours according to whether the method converged or not
-    if(solution.no_crack_opening[solution.k])
+    //  Plots crack profile in colours according to whether the method converged or not
+    if  (solution.no_crack_opening[solution.k])
     {
         plotProfiles(solution.z, solution.w[solution.k],
                         "Crack displacement profile",
@@ -389,7 +387,7 @@ void guimain::plotHandler(Solution solution)
 }
 
 
-//Plots the crack profiles using the qtcustomplot class
+//  Plots the crack profiles using the qtcustomplot class
 void guimain::plotProfiles(vector<double> x,
                            vector<double> y,
                            string title,
@@ -404,8 +402,8 @@ void guimain::plotProfiles(vector<double> x,
     path = file.directory + "Profiles/" + title;
     ui -> Crackplot -> addGraph();
 
-    //Sets colour depending on method convergence
-    if(valid==1)
+    //  Sets colour depending on method convergence
+    if (valid == 1)
     {
         ui -> Crackplot -> graph(0) ->setPen(QPen(Qt::green));
     }
@@ -414,10 +412,12 @@ void guimain::plotProfiles(vector<double> x,
         ui -> Crackplot -> graph(0) ->setPen(QPen(Qt::red));
     }
 
-    ui -> Crackplot -> graph(0)->setLineStyle(QCPGraph::lsNone);
-    ui -> Crackplot -> graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCross, 4));
+    ui -> Crackplot -> graph(0) ->
+            setLineStyle(QCPGraph::lsNone);
+    ui -> Crackplot -> graph(0) ->
+            setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCross, 4));
 
-    //Converts std vectors to QVectors for use by QCPPainter
+    //  Converts std vectors to QVectors for use by QCPPainter
     QVector<double> Qx = QVector<double>::fromStdVector(x);
 
     QVector<double> Qy = QVector<double>::fromStdVector(y);
@@ -660,10 +660,15 @@ void guimain::on_varCombo_activated(int index)
 {
     extern Solution solution;
 
-    //Plots crack profiles with colours depending on method convergence
+    //  Plots crack profiles with colours depending on method convergence
     if(index != 0)
     {
-        plotProfiles(solution.z, solution.w[index+1], "Crack displacement profile", "Distance behind crack tip", "Crack opening displacement",0,solution.no_crack_opening[index+1]);
+        plotProfiles(solution.z, solution.w[index+1],
+                    "Crack displacement profile",
+                    "Distance behind crack tip",
+                    "Crack opening displacement",
+                    0,
+                    solution.no_crack_opening[index+1]);
     }
     else
     {

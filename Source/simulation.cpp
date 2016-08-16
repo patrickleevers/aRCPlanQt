@@ -17,14 +17,12 @@ using namespace std;
 //  Null constructor
 Simulation::Simulation()
 {
-
 	i=0;
     adotc0=0.0;
-
 }
 
-//Taking parameters as arguments, peforms the calculation for a given range of
-//the independent variable eventually produced a solution
+//  Taking parameters as arguments, peforms the calculation for a given range of
+//  the independent variable eventually produced a solution
 Solution Simulation::run(Parameters parameters)
 {
 //  Quick calculations with values read from the GUI
@@ -41,16 +39,17 @@ Solution Simulation::run(Parameters parameters)
 
     file.logPrepare(parameters);
 
-    //  Compute the effective multiplier on pipe wall density
-    //  where the wall has 'attached' backfill or contains water
+    //  Compute the effective density of a pipe wall with 'attached' backfill…
     Backfill backfill(parameters);
-    WaterContent watercontent(parameters);
     file.collect(backfill);
+    //  …and/or contained water
+    WaterContent watercontent(parameters);
+    file.collect(watercontent);
 
     //	Preliminary calculations
     BeamModel beamModel(parameters);
 
-    //  Clears the solution from any previous runs
+    //  Clear the solution from any previous runs
     solution.clear();
     solution.displacement(parameters);
 
@@ -89,21 +88,22 @@ Solution Simulation::run(Parameters parameters)
         file.collect(creep);
 
         //  Speed dependent properties
-        beamModel.reset(parameters, backfill, watercontent, creep);
-
-        //  Initialise crack and compute Irwin-Corten crack driving force
-        //  at initial pressure:
+        beamModel.reset(parameters,
+                        backfill,
+                        watercontent,
+                        creep);
 
         // Determine crack opening displacement profile
-        FDprofile final;
-        beamModel.SolveForCrackProfile(parameters, creep);
+        beamModel.SolveForCrackProfile(parameters,
+                                       creep);
 
-        beamModel.opening(parameters, creep);
-
-        //        beamModel.crackDrivingForce(final, parameters, creep);
+        beamModel.crackDrivingForce(parameters,
+                                    backfill,
+                                    creep);
 
         //Pass values to solution to collect them
-        //TODO: Arguments passed individually to avoid circular header reference if arguments passed by object
+        //  TODO: Arguments passed individually
+        //  to avoid circular header reference if arguments passed by object
         solution.collect(parameters.adotc0,
                             parameters.p0bar,
                             parameters.tempdegc,

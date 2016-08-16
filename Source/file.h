@@ -1,7 +1,8 @@
-//     aRCPLan
-//     Copyright (c) [2016] [Fraser Edwards][Dr Patrick Leevers]
-//     aRCPlan may be freely distributed under the MIT license.
-//     For the underlying model, see http://www.sciencedirect.com/science/article/pii/S0013794412003530
+//  aRCPLan
+//  Copyright (c) [2016] [Fraser Edwards][Dr Patrick Leevers]
+//  aRCPlan may be freely distributed under the MIT license.
+//  For the underlying model, see
+//  http://www.sciencedirect.com/science/article/pii/S0013794412003530
 
 #ifndef _FILE_H
 #define _FILE_H
@@ -54,7 +55,8 @@ public:
     //  Clears all values in file
     void initialise();
 
-    //  Resizes directory, removing aRCPlan.app to find overall directory of program
+    //  Resizes directory, removing aRCPlan.app
+    //  to find overall directory of program
     void correct();
 
     //  Check for existence of folder required for storing files
@@ -94,6 +96,7 @@ public:
     //  Update log file before writing a line
     void collect(Creep creep);
     void collect(Backfill backfill);
+    void collect(WaterContent watercontent);
     void collect(BeamModel *beamModel, int newline);
     void collect(OutflowProcess *outflow, int newline);
 

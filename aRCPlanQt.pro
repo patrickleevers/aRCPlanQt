@@ -32,7 +32,7 @@ SOURCES += ../aRCPlanQt-master/Source/main.cpp\
     ../aRCPlanQt-master/Source/simulation.cpp \
     ../aRCPlanQt-master/Source/solution.cpp \
     ../aRCPlanQt-master/Source/symdoublematrix.cpp \
-    ../aRCPlanQt-master/Source/watercontent.cpp
+    ../aRCPlanQt-master/Source/liquidcontent.cpp
 
 HEADERS  += \
     ../aRCPlanQt-master/Source/about.h \
@@ -52,7 +52,7 @@ HEADERS  += \
     ../aRCPlanQt-master/Source/simulation.h \
     ../aRCPlanQt-master/Source/solution.h \
     ../aRCPlanQt-master/Source/symdoublematrix.h \
-    ../aRCPlanQt-master/Source/watercontent.h
+    ../aRCPlanQt-master/Source/liquidcontent.h
 
 
 FORMS    += \

@@ -29,8 +29,8 @@ FDprofile::FDprofile(const double alpha[2],
 //	Constructor
 {
     elementsPerUnitLength = elementsInL;
-//  Crack-tip and closure points with v* = 0 are not represented in the array
-    arraySize = nodeAtClosure;
+//  Crack-tip and closure points with v* = 0 are not represented in this array
+    arraySize = nodeAtClosure - 1;
 
 //  Create and set to zero a matrix [M] of finite difference coefficients
     SymDoubleMatrix mMx(arraySize);
@@ -66,8 +66,8 @@ FDprofile::FDprofile(const double alpha[2],
                 mLocal = m[1]
                         + zeta_at_max_dzetadz * (m[0] - m[1]);
                 zeta_at_max_dzetadz -= h;
-//  This sends zeta_at_max_dzetadz negative to signal that backfill has gone,
-//  so no more points need be tested.
+                //  …sends zeta_at_max_dzetadz negative to signal that
+                //  backfill has gone, so no more points need be tested.
             }
         }
 
@@ -258,8 +258,6 @@ double FDprofile::IntegralVStarDZeta_12()
 double FDprofile::ClosureMoment()
 //  Find closure-point:crack-tip ratio of dvStar2_dzeta2, using 5-point stencils
 {
-    //	return (v_ptr[arraySize-3] -4.0 * v_ptr[arraySize-2] + 6.0 * v_ptr[arraySize-1])
-    //			/ (6.0 * v_ptr[0] - 4.0 * v_ptr[1] + v_ptr[2]);
     return (-v_ptr[arraySize-2] +  16.0 * v_ptr[arraySize-1])
                                 / (16.0 * v_ptr[0] - v_ptr[1]);
 }   //  end closureMoment()
@@ -268,7 +266,7 @@ double FDprofile::ClosureMoment()
 void FDprofile::GetBackfillEjectPoint(double& zeta_at_max_dzetadz,
                                       double& vStarDashBackfillEject)
 //  Find point within 0 < zeta < 1 at which 2nd derivative of COD changes sign,
-//  and get 1st derivative at that point
+//  and return 1st derivative at that point
 {
     double interval = 1.0 / float(elementsPerUnitLength);
     short foundIt = false;
@@ -403,12 +401,16 @@ short FDprofile::NodeAtClosure()
 
 
 void FDprofile::ShowCODProfile()
-//  outputs crack opening displacement profile
+//  Map the COD profile into an x/y array for plotting, restoring zero endpoints
 {
-    l = arraySize;
+    profile_plot_points = arraySize + 2;
+    zeta.push_back(0.0);
+    vptra.push_back(0.0);
     for (int i=0; i<arraySize; i++)
     {
-        zeta.push_back(float(i + 1) / float(elementsPerUnitLength));
+        zeta.push_back(float(i+1) / float(elementsPerUnitLength));
         vptra.push_back(float(v_ptr[i]));
     }
+    zeta.push_back(float(arraySize+1) / float(elementsPerUnitLength));
+    vptra.push_back(0.0);
 }   //  end ShowCODProfile()

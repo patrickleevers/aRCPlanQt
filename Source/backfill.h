@@ -7,8 +7,8 @@
 //  The effect on RCP of an incompressible backfill, surrounding the pipe as an
 //  axisymmetrical sleeve, is represented only by the radially-moving mass
 //  which it attaches to pipe wall.
-//  The effect is expressed through an "effective" water density added to
-//  the real density of the pipe wall -- where the backfill remains attached.
+//  The effect is expressed through an "effective" density added to the
+//  real density of the pipe wall -- as long as the backfill remains attached.
 
 #ifndef _BACKFILL_H
 #define _BACKFILL_H
@@ -26,7 +26,8 @@ public:
     //  Calculates effective density
 	Backfill(const Parameters parameters);
 
-    double effective_density;
+    double effective_density;   //  Added to pipe density if backfill attached
+    double ke_factor;           //  Backfill KE / unit length / dwdt^2
 
 
 private:

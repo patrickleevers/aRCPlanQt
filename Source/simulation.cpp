@@ -17,8 +17,8 @@ using namespace std;
 //  Null constructor
 Simulation::Simulation()
 {
-	i=0;
-    adotc0=0.0;
+    i = 0;
+    adotc0 = 0.0;
 }
 
 //  Taking parameters as arguments, peforms the calculation for a given range of
@@ -27,8 +27,6 @@ Solution Simulation::run(Parameters parameters)
 {
 //  Quick calculations with values read from the GUI
     parameters.h = parameters.diameter/parameters.sdr/Constants::kilo; // (m)
-//    parameters.hoverr = 2.0/ (parameters.sdr-1);
-//    parameters.radius = parameters.h / parameters.hoverr;
 
     parameters.crack_width = parameters.diameter / parameters.sdr
             - parameters.notch_depth;
@@ -42,9 +40,9 @@ Solution Simulation::run(Parameters parameters)
     //  Compute the effective density of a pipe wall with 'attached' backfill…
     Backfill backfill(parameters);
     file.collect(backfill);
-    //  …and/or contained water
-    WaterContent watercontent(parameters);
-    file.collect(watercontent);
+    //  …and/or contained liquid
+    LiquidContent liquidcontent(parameters);
+    file.collect(liquidcontent);
 
     //	Preliminary calculations
     BeamModel beamModel(parameters);
@@ -90,7 +88,7 @@ Solution Simulation::run(Parameters parameters)
         //  Speed dependent properties
         beamModel.reset(parameters,
                         backfill,
-                        watercontent,
+                        liquidcontent,
                         creep);
 
         // Determine crack opening displacement profile
@@ -99,11 +97,13 @@ Solution Simulation::run(Parameters parameters)
 
         beamModel.crackDrivingForce(parameters,
                                     backfill,
+                                    liquidcontent,
                                     creep);
 
-        //Pass values to solution to collect them
+        //  Pass values to solution for collection from there
         //  TODO: Arguments passed individually
         //  to avoid circular header reference if arguments passed by object
+
         solution.collect(parameters.adotc0,
                             parameters.p0bar,
                             parameters.tempdegc,
@@ -113,19 +113,38 @@ Solution Simulation::run(Parameters parameters)
                             beamModel.lambda,
                             beamModel.deltadstar,
                             beamModel.gs1,
-                            beamModel.gue,
-                            beamModel.gsb,
-                            beamModel.gkb,
-                            beamModel.g0,
+                            beamModel.gue2,
+                            beamModel.gs2,
+                            beamModel.gk2,
+                            beamModel.gs1_ic,
                             beamModel.gg0,
-                            beamModel.gtotal,
-                            beamModel.no_crack_opening,
+                            beamModel.g_total,
+                            beamModel.w_integral_12,
                             beamModel.lambda_is_converged,
                             beamModel.closure_is_converged,
                             beamModel.iterations);
 
-        //Clear log values following end of simulation
+        //  Clear log values following end of simulation
         file.initialise();
     }
     return solution;
 }
+void collect(const double adotc0s,
+             const double p0bars,
+             const double tempdegcs,
+             const double decompressions,
+             const double alphas,
+             const double ms,
+             const double lambdas,
+             const double deltadstars,
+             const double gs1s,
+             const double gues,
+             const double gsbs,
+             const double gkbs,
+             const double g0s,
+             const double gg0s,
+             const double g_totals,
+             const short w_integral_12,
+             const short lambda_is_converged,
+             const short closure_is_converged,
+             const short iterations);

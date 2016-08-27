@@ -23,7 +23,6 @@ File::File()
 void File::initialise()
 {
     adotc0 = 0.0;
-    g0 = 0.0;
     diameter_res0 = 0.0;
 
 //    dstarminus1 = 0.0;
@@ -37,7 +36,6 @@ void File::initialise()
     lambda_last = 0.0;
     closure_is_converged = 0;
     iterations = 0;
-    no_crack_opening = 0;
     w_2 = 0.0;
     w_max = 0.0;
     wdash_2 = 0.0;
@@ -60,7 +58,8 @@ void File::initialise()
     zeta_backfill_ejection = 0.0;
     lambda = 0.0;
     v00 = 0.0;
-    error = 0.0;
+    lambda_error = 0.0;
+    closure_error = 0.0;
     pipe_volume_availability = 0.0;
     wdash_max = 0.0;
 
@@ -81,21 +80,19 @@ void File::initialise()
     tStarOutflow2 = 0.0;
 
     writeLogLine(1);
-
 }
 
-//Reduces directory path to where "aRCPlanQt.app" is found
+//Reduce directory path to where "aRCPlanQt.app" is found
 void File::correct()
 {
-
     found = directory.find("aRCPlanQt.app");
 
     if (found != string::npos)
     {
-         directory.resize(found);
+        directory.resize(found);
     }
-
 }
+
 
 //Checks if folders can be found for storing results files
 int File::check()
@@ -190,7 +187,7 @@ int File::caseHandler(Parameters temp, string filename)
     }
 }
 
-//Writes results file by accessing global object solution
+//  Writes results file by accessing global 'solution' object
 void File::writeResults()
 {
     extern File file;
@@ -207,7 +204,7 @@ void File::writeResults()
 
     for(i=1; i<solution.soln+1;i++)
     {
-        //Write solution line for a given independent variable value
+        // Write solution line for a given independent variable value
         out << solution.adotc0[i] << ","
                 << solution.p0bar[i] << ","
                 << solution.tempdegc[i] << ","
@@ -217,8 +214,8 @@ void File::writeResults()
                 << solution.lambda[i] << ", ,"
                 << solution.g0[i] << ","
                 << solution.gg0[i] << ","
-                << solution.gtotal[i] << ","
-                << solution.no_crack_opening[i] << ","
+                << solution.g_total[i] << ","
+                << solution.w_integral_12[i] << ","
                 << solution.lambda_is_converged[i] << ","
                 << solution.iterations[i] << "\n";
 
@@ -288,7 +285,7 @@ void File::writeParTXT(Parameters temp, string file_name)
     writeLineTXT("backfillDepth = ", temp.backfill_depth, out, 0);
     writeLineTXT("backfillDensity = ", temp.backfill_density, out, 0);
     writeLineTXT("solidInsidePipe = ", temp.solid_inside_pipe, out, 0);
-    writeLineTXT("waterInsidePipe = ", temp.water_inside_pipe, out, 1);
+    writeLineTXT("liquidInsidePipe = ", temp.liquid_inside_pipe, out, 1);
 
     writeLineTXT("Program Control Data", out, 1);
 
@@ -342,7 +339,7 @@ void File::writeParCSV(Parameters temp, string filename)
     writeLineCSV("backfillDepth", temp.backfill_depth, out);
     writeLineCSV("backfillDensity", temp.backfill_density, out);
     writeLineCSV("solidInsidePipe", temp.solid_inside_pipe, out);
-    writeLineCSV("waterInsidePipe", temp.water_inside_pipe, out);
+    writeLineCSV("liquidInsidePipe", temp.liquid_inside_pipe, out);
 
     writeLineCSV("\n", out);
     writeLineCSV("Program Control Data", out);
@@ -417,62 +414,73 @@ void File::writeHeaders(string temp)
     //Reset log number
     log_number = 0;
 
-    //Set headers
-    out << "Log number" << ","
-        << "aDotc0" << ","
-        << "Irwin Corten Force" << ","
-        << "diameterRes0" << ","
-        << "residualCrackClosure" << ","
-        << "densityratio" << ","
-//  OutflowProcess
-        << "p_now" << ","
-        << "pUnchoke" << ","
-        << "pHalfp1" << ","
-        << "tStar" << ","
-        << "unchoked" << ","
-        << "xUnchoked_i" << ","
-        << "tStarUnchoke" << ","
-        << "integral_pressure_dt" << ","
-        << "tStarOutflow" << ","
-        << "tStarOutflow2" << ","
+    //  Set headers
+    out << "Log number" << ","              //  c1
+        << "aDotc0" << ","                  //  c2
+        << "residualCrackClosure" << ","    //  c4
+        << "effectiveDensity" << ","        //  c5
+    //  OutflowProcess
+//        << "p_now" << ","
+//        << "pUnchoke" << ","
+//        << "pHalfp1" << ","
+//        << "tStar" << ","
+//        << "unchoked" << ","
+//        << "xUnchoked_i" << ","
+//        << "t*Unchoke" << ","
+//        << "int_pressure_dt" << ","
+        << "t*outflow" << ","
+//        << "t*outflow2" << ","
 //  BeamModel
-        << "zetaclosure" << ","
-        << "nodeAtClosure" << ","
-        << "lambda" << ","
-        << "p1bar" << ","
-        << "v0" << ","
-        << "vStarRes" << ","
-        << "lambda_factor" << ","
-        << "aDotCLfactor" << ","
-        << "aDotcClfactor_backfilled" << ","
-        << "maxIterations" << ","
-        << "iterations" << ","
-        << "m[0]" << "," << "m[1]" << ","
-        << "alpha[0]" << "," << "alpha[1]" << ","
-        << "error" << ","
-        << "notConverged" << "\n";
-
+        << "zetaclosure" << ","             //  c5
+        << "node@closure" << ","            //  c6
+        << "lambda" << ","                  //  c7
+        << "p1bar" << ","                   //  c8
+        << "v0" << ","                      //  c9
+        << "vStarRes" << ","                //  c10
+        << "lambda_factor" << ","           //  c11
+        << "aDotCLfactor" << ","            //  c12
+        << "aDotClfactor_bf" << ","         //  c13
+        << "maxIterations" << ","           //  c14
+        << "iterations" << ","              //  c15
+        << "m[0]" << ","                    //  c16
+        << "m[1]" << ","                    //  c17
+        << "alpha[0]" << ","                //  c18
+        << "alpha[1]" << ","                //  c19
+        << "lambdaError" << ","             //  c20
+        << "lambdaCnvrgd?" << ","           //  c21
+        << "closureError" << ","            //  c22
+        << "closureCnvrgd?" << ","          //  c23
+        << "lambdaFactor" << ","            //  c24
+        << "gs1_ic" << ","                  //  c25
+        << "gs1_rsid" << ","                //  c26
+        << "gs1_liqd" << ","                //  c27
+        << "gs1" << ","                     //  c28
+        << "gue12" << ","                   //  c29
+        << "gs2" << ","                     //  c30
+        << "gk2" << ","                     //  c31
+        << "gk2_bf" << ","                  //  c32
+        << "g_total" << "\n";               //  c33
     writeLineCSV("\n", out);
     out.close();
-}
+}   //  end writeHeaders()
 
 
-//Handler for the log file
+//  Handler for the log file
 void File::logPrepare(Parameters temp)
 {
     initialise();
     file_name = "Log/Log.csv";
     writeParCSV(temp, file_name);
     writeHeaders(file_name);
-}
+}   //  end logPrepare()
 
-//Writes single line using the current log values
+//  Writes single line using the current log values
 void File::writeLogLine(int newline)
 {
     out.open((directory + file_name).c_str(),
              std::fstream::in | std::fstream::out | std::fstream::app);
 
-    //Reset count and create new line
+    //  Reset count and create new line
     if(newline)
     {
     out << " \n";
@@ -480,44 +488,56 @@ void File::writeLogLine(int newline)
     }
 
     log_number++;
-    out << log_number << ","
-        << adotc0 << ","
-        << g0 << ","
-        << diameter_res0 << ","
-        << residual_crack_closure << ","
-//  OutflowProcess
-        << p_now << ","
-        << pUnchoke << ","
-        << pHalfp1 << ","
-        << tStar << ","
-        << unchoked << ","
-        << xUnchoked_i << ","
-        << tStarUnchoke << ","
-        << integral_pressure_dt << ","
+    out << log_number << ","                //  c1
+        << adotc0 << ","                    //  c2
+        << residual_crack_closure << ","    //  c4
+        << pipe_effective_density << ","    //  c5
+    //  OutflowProcess
+//        << p_now << ","
+//        << pUnchoke << ","
+//        << pHalfp1 << ","
+//        << tStar << ","
+//        << unchoked << ","
+//        << xUnchoked_i << ","
+//        << tStarUnchoke << ","
+//        << integral_pressure_dt << ","
         << tStarOutflow << ","
-        << tStarOutflow2 << ","
-//  BeamModel
-        << zetaclosure << ","
-        << node_at_closure << ","
-        << lambda << ","
-        << p1bar << ","
-        << v0 << ","
-        << vStarRes << ","
-        << lambda_factor << ","
-        << adotclfactor << ","
-        << adotclfactor_backfilled << ","
-        << max_iterations << ","
-        << iterations << ","
-        << m[0] << "," << m[1] << ","
-        << alpha[0] << "," << alpha[1] << ","
-        << error << ","
-        << closure_is_converged << "\n";
-
+//        << tStarOutflow2 << ","
+    //  BeamModel
+        << zetaclosure << ","               //  c5
+        << node_at_closure << ","           //  c6
+        << lambda << ","                    //  c7
+        << p1bar << ","                     //  c8
+        << v0 << ","                        //  c9
+        << vStarRes << ","                  //  c10
+        << lambda_factor << ","             //  c11
+        << adotclfactor << ","              //  c12
+        << adotclfactor_backfilled <<","    //  c13
+        << max_iterations << ","            //  c14
+        << iterations << ","                //  c15
+        << m[0] << ","                      //  c16
+        << m[1] << ","                      //  c17
+        << alpha[0] << ","                  //  c18
+        << alpha[1] << ","                  //  c19
+        << lambda_error << ","              //  c20
+        << lambda_is_converged << ","       //  c21
+        << closure_error << ","             //  c22
+        << closure_is_converged << ","      //  c23
+        << lambda_factor << ","             //  c24
+        << gs1_ic << ","                    //  c25
+        << gs1_rsid << ","                  //  c26
+        << gs1_liqd << ","                  //  c27
+        << gs1 << ","                       //  c28
+        << gue2 << ","                      //  c29
+        << gs2 << ","                       //  c30
+        << gk2 << ","                       //  c31
+        << gk2_bf << ","                    //  c32
+        << g_total << "\n";                 //  c33
     out.close();
 }
 
-//The following functions collect data from the argument object
-//before writing a line using the function above
+//  Each of the following functions collects data from its argument object,
+//  to be written to the log using writeLogLine()
 
 void File::collect(Creep creep)
 {
@@ -526,20 +546,22 @@ void File::collect(Creep creep)
     writeLogLine(0);
 }
 
+
 void File::collect(Backfill backfill)
 {
     effective_density =  backfill.effective_density;
     writeLogLine(0);
 }
 
-void File::collect(WaterContent watercontent)
+
+void File::collect(LiquidContent liquidcontent)
 {
-    effective_density =  watercontent.effective_density;
+    effective_density =  liquidcontent.effective_density;
     writeLogLine(0);
 }
 
-//Following functions take pointers to original objects and are built as such
 
+//  The following functions take pointers to original objects and are built as such
 
 void File::collect(OutflowProcess *outflow, int newline)
 {
@@ -559,6 +581,7 @@ void File::collect(OutflowProcess *outflow, int newline)
 
 void File::collect(BeamModel *beamModel, int newline)
 {
+    pipe_effective_density = beamModel -> pipe_effective_density;
     zetaclosure = beamModel -> zetaclosure;
     node_at_closure = beamModel -> node_at_closure;
     lambda = beamModel -> lambda;
@@ -573,10 +596,20 @@ void File::collect(BeamModel *beamModel, int newline)
     m[1] = beamModel -> m[1];
     alpha[0] = beamModel -> alpha[0];
     alpha[1] = beamModel -> alpha[1];
-    error = beamModel -> error;
+    lambda_error = beamModel -> lambda_error;
+    lambda_is_converged = beamModel -> lambda_is_converged;
+    closure_error = beamModel -> closure_error;
     closure_is_converged = beamModel -> closure_is_converged;
-    lambda_factor = beamModel ->lambda_factor;
+    lambda_factor = beamModel -> lambda_factor;
+    gs1_ic = beamModel -> gs1_ic;
+    gs1_rsid = beamModel -> gs1_rsid;
+    gs1_liqd = beamModel -> gs1_liqd;
+    gs1 = beamModel -> gs1;
+    gue2 = beamModel -> gue2;
+    gs2 = beamModel -> gs2;
+    gk2 = beamModel -> gk2;
+    gk2_bf = beamModel -> gk2_bf;
+    g_total = beamModel -> g_total;
 
     writeLogLine(newline);
 }   //  end collect(BeamModel *beamModel, int newline)
-

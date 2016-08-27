@@ -32,9 +32,9 @@ Solution::Solution()
     gsb.push_back(0.0);
     gkb.push_back(0.0);
     gg0.push_back(0.0);
-    gtotal.push_back(0.0);
+    g_total.push_back(0.0);
     g0.push_back(0.0);
-    no_crack_opening.push_back(1);
+    w_integral_12.push_back(1);
     lambda_is_converged.push_back(1);
     closure_is_converged.push_back(1);
     iterations.push_back(0);
@@ -76,12 +76,12 @@ void Solution::clear()
     gkb.resize(1);
     gg0.clear();
     gg0.resize(1);
-    gtotal.clear();
-    gtotal.resize(1);
+    g_total.clear();
+    g_total.resize(1);
     g0.clear();
     g0.resize(1);
-    no_crack_opening.clear();
-    no_crack_opening.resize(1);
+    w_integral_12.clear();
+    w_integral_12.resize(1);
     lambda_is_converged.clear();
     lambda_is_converged.resize(1);
     closure_is_converged.clear();
@@ -99,29 +99,27 @@ void Solution::displacement(Parameters &parameters)
 
     //  Create column (used as row) vector
     for (i = 0; i < n; i++ )
-    {
         row.push_back(0.0);
-    }
+
     //  Stores vector in vector to provide a "Matrix"
     for (i = 0; i < parameters.range_number; i++)
-    {
         w.push_back(row);
-    }
+
     //  Generate axial coordinate from crack tip
     for (i = 1; i < n; i++)
-        z.push_back(double(i)/double(parameters.elements_in_l));
-}
+        z.push_back(double(i) / double(parameters.elements_in_l));
+}   //  end displacement()
 
+void Solution::collectProfile(const vector<double> vptras, const int points)
 //  For each solution k, collect the crack profile and write it into the matrix
 //  already created
-void Solution::collectProfile(const vector<double> vptras, const int ls)
 {
     k++;
-    for (i = 0; i <= ls; i++)
-    {
-        w[k][i]=vptras[i];
-    }
-}
+    for (i = 1; i <= points+1; i++)
+        w[k][i] = vptras[i];
+    for (i = points; i <= n+1; i++)
+        w[k][i] = 0.0;
+}   //  end collectProfile()
 
 //  Collects the values from the arguments provided, storing them into
 //  a single solution object
@@ -139,8 +137,8 @@ void Solution::collect(const double adotc0s,
                        const double gkbs,
                        const double g0s,
                        const double gg0s,
-                       const double gtotals,
-                       const short no_crack_openings,
+                       const double g_totals,
+                       const double w_integral_12s,
                        const short closure_is_convergeds,
                        const short lambda_is_convergeds,
                        const short iterationss)
@@ -163,7 +161,7 @@ void Solution::collect(const double adotc0s,
 	g0.push_back(g0s);
 
     //  Flips values so that they make sense under the headings of the tables
-    no_crack_opening.push_back(!no_crack_openings);
+    w_integral_12.push_back(!w_integral_12s);
     closure_is_converged.push_back(!closure_is_convergeds);
     lambda_is_converged.push_back(!lambda_is_convergeds);
     iterations.push_back(iterationss);
@@ -174,8 +172,8 @@ void Solution::collect(const double adotc0s,
     else
     {gg0.push_back(0.0);}
 
-    if (gtotals < 1000)
-    {gtotal.push_back(gtotals);}
+    if (g_totals < 1000)
+    {g_total.push_back(g_totals);}
     else
-    {gtotal.push_back(0.0);}
+    {g_total.push_back(0.0);}
 }

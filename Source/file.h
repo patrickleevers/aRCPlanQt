@@ -96,7 +96,7 @@ public:
     //  Update log file before writing a line
     void collect(Creep creep);
     void collect(Backfill backfill);
-    void collect(WaterContent watercontent);
+    void collect(LiquidContent liquidcontent);
     void collect(BeamModel *beamModel, int newline);
     void collect(OutflowProcess *outflow, int newline);
 

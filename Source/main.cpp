@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     //  Find application directory
     file.directory = a.applicationDirPath().toStdString();
 
-    //  Alters directory to outside the application bundle
+    //  Relocate directory outside the application bundle
     file.correct();
 
     //  Create initial parameters to populate the GUI

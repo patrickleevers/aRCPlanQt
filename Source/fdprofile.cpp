@@ -401,16 +401,17 @@ short FDprofile::NodeAtClosure()
 
 
 void FDprofile::ShowCODProfile()
-//  Map the COD profile into an x/y array for plotting, restoring zero endpoints
+//  Map the COD profile into a z/v array for plotting, restoring zero endpoints
 {
-    profile_plot_points = arraySize + 2;
+    vptra.clear();
+    cod_plot_points = arraySize + 2;
     zeta.push_back(0.0);
     vptra.push_back(0.0);
     for (int i=0; i<arraySize; i++)
     {
-        zeta.push_back(float(i+1) / float(elementsPerUnitLength));
+        zeta.push_back(float(i + 1) / float(elementsPerUnitLength));
         vptra.push_back(float(v_ptr[i]));
     }
-    zeta.push_back(float(arraySize+1) / float(elementsPerUnitLength));
-    vptra.push_back(0.0);
+        zeta.push_back(float(arraySize + 1) / float(elementsPerUnitLength));
+        vptra.push_back(0.0);
 }   //  end ShowCODProfile()

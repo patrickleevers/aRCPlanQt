@@ -19,7 +19,7 @@
 class FDprofile
 {
 	public:
-        int profile_plot_points;
+        int cod_plot_points;
 		vector<double> zeta;
         vector<double> vptra;
         FDprofile();            // Null constructor

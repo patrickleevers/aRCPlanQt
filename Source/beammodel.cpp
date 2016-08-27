@@ -31,8 +31,15 @@ BeamModel::BeamModel(const Parameters parameters)
     initialise();
     extern File file;
 
+//  Residual stress in pipe
+    residualpressure = 2.0 / 3.0 * parameters.dynamic_modulus
+                        / pow(parameters.sdr / sdrminus1, 3)
+                        * (1.0 - parameters.diameter_creep_ratio);
+//  Dimensionless virtual crack opening at tip, representing residual strain
+//    vStarRes = creep.residual_crack_closure / v0 / Constants::kilo;
+
 //  Proportion of internal volume available for expansion
-    pipe_volume_availability = 1.0 - parameters.water_inside_pipe;
+    pipe_volume_availability = 1.0 - parameters.liquid_inside_pipe;
     if (not parameters.fullscale)
          pipe_volume_availability -= parameters.solid_inside_pipe;
 
@@ -61,8 +68,6 @@ void BeamModel::initialise()
     baffle_leakage_area = 0.0;
     closure_is_converged = 0;
     dynamic_shear_modulus = 0.0;
-    error = 0.0;
-    w_integral_12 = 0.0;
     iterations = 0;
     l = 0;
 
@@ -72,7 +77,6 @@ void BeamModel::initialise()
     lambda_last = 0.0;
 
     max_iterations = 0;
-    no_crack_opening = 0;
     node_at_closure = 0;
     p1bar = 0.0;
     p1p0r = 0.0;
@@ -85,9 +89,10 @@ void BeamModel::initialise()
     wdash_2 = 0.0;
     wdash_max = 0.0;
     w2dash_2 = 0.0;
+    w_integral_12 = 0.0;
     w_max = 0.0;
 
-    zeta_backfill_ejection = 0.5;
+    zeta_backfill_ejection = 0.0;
     zetaclosure = 0.0;
 
     m[0] = 0.0;
@@ -99,13 +104,12 @@ void BeamModel::initialise()
 
 void BeamModel::reset(const Parameters parameters,
                       const Backfill backfill,
-                      const WaterContent watercontent,
+                      const LiquidContent liquidcontent,
                       const Creep creep)
-{
 //  Set model parameters which depend on the independent variable
 //  (speed, temperature, pressure)
 //  and reset certain values at the beginning of each simulation
-
+{
     extern File file;
 
 //  Set initial estimated outflow, backfill ejection and reclosure points
@@ -115,6 +119,7 @@ void BeamModel::reset(const Parameters parameters,
     node_at_closure = short(zetaclosure * parameters.elements_in_l);
 
 //  For FS configuration, determine prior decompression
+    file.adotc0 = parameters.adotc0;
     p1bar = parameters.p0bar;
     Decomp decomp;
 //  Proportion of initial pressure which remains at crack tip
@@ -127,21 +132,9 @@ void BeamModel::reset(const Parameters parameters,
 
     p1p0r = decomp.p1p0r; //TODO: remove throughout, so only decomp.p1p0r used
 
-//  v00 becomes reference length v0 on multiplying by lambda^4
-    v00 = 4.0 / Constants::c1
-            * sdrminus1 * sdrminus2 / parameters.sdr
-            * p1bar                                         //  * 10^05
-            / parameters.dynamic_modulus                    //  / 10^09
-            * parameters.diameter                           //  * 10^-03
-            / Constants::mega / 10.0;                       //	hence m
-
-    v0 = v00 * pow(lambda, 4);			//	(m)
-//  Dimensionless virtual crack opening at tip, representing residual strain
-//    vStarRes = creep.residual_crack_closure / v0 / Constants::kilo;
-
 //  Effective dynamical density of wall, lumped with any liquid it moves
-        pipe_effective_density = parameters.density
-                                      + watercontent.effective_density;
+    pipe_effective_density = parameters.density
+                                      + liquidcontent.effective_density;
 
 //  Parameters for equivalent beam model (speed dependent)
     adotovercl = parameters.adotc0 * Constants::vSonic
@@ -149,20 +142,15 @@ void BeamModel::reset(const Parameters parameters,
     adotovercl_backfilled = adotovercl
             * sqrt(pipe_effective_density + backfill.effective_density);
     adotovercl = adotovercl
-            * sqrt(pipe_effective_density + watercontent.effective_density);
+            * sqrt(pipe_effective_density + liquidcontent.effective_density);
     adotclfactor = 1.0 + pow(adotovercl, 2);
     adotclfactor_backfilled = 1.0 + pow(adotovercl_backfilled, 2);
     lambda_factor = Constants::pi * Constants::c1
-                    * 625.0                 // NB GPa / bar / 16 = 625
-                    * parameters.dynamic_modulus / p1bar
-                    * pipe_volume_availability
-                    * sdrminus2 / sdrminus1 / sdrminus1
-                    * parameters.adotc0;
-
-    residualpressure = 2.0 / 3.0 * parameters.dynamic_modulus
-                        / pow(parameters.sdr / sdrminus1, 3)
-                        * (1.0 - parameters.diameter_creep_ratio);
-    file.adotc0 = parameters.adotc0;
+                        * 625.0                 // NB GPa / bar / 16 = 625
+                        * parameters.dynamic_modulus / p1bar
+                        * pipe_volume_availability
+                        * sdrminus2 / sdrminus1 / sdrminus1
+                        * parameters.adotc0;
     file.collect(this, 0);
 }   //  end reset()
 
@@ -202,8 +190,8 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
 //  outflow model.
 //
 //  The first loop evaluates the beam opening profile by successively adjusting
-//  the outflow length (i.e. the length of loaded beam) according to the outflow
-//  model. It is initially assumed that the beam's foundation stiffness
+//  the outflow length (i.e. the length of pressure-loaded beam) according to
+//  the outflow model. We initially assume that the beam's foundation stiffness
 //  closes the crack at twice this length.
 //
 //  The second loop refines each profile solution by moving this closure point
@@ -213,7 +201,6 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
     extern Solution solution;
     max_iterations = 20;
     iterations = 0;
-    error = 0.0;
     double tolerance = 0.04;
 //  GUI assigns checked checkbox = 2
     if ((parameters.outflow_model_on == 2) & (parameters.verbose == 2))
@@ -229,9 +216,10 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
     crackSpeed(parameters);
     lambda_last = lambda;   //  Specified starting value
     lambda_is_converged = 0;
+    closure_is_converged = 0;
     do
     {
-        do
+        do  //  At least once
         {   //  Calculate outflow length using adiabatic discharge model:
             iterations++;
             lambda_last = lambda;   //  using value about to be updated
@@ -248,7 +236,7 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
                                     residualpressure,
                                     parameters.elements_in_l,
                                     node_at_closure);
-            error = beam_profile.ClosureMoment();
+            closure_error = beam_profile.ClosureMoment();
             beam_profile.GetBackfillEjectPoint(zeta_backfill_ejection,
                                               dontNeedThis);
     //  Recorded for subsequent refinement by moving closure point, if required:
@@ -258,7 +246,7 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
                 OutflowProcess outflow(p1bar);
                 lambda = pow(lambda_factor
                             * outflow.get_tStarOutflow() / w_integral_12, 0.2);
-                //	tStarOutflow: number of characteristic times for discharge
+                //	tStarOutflow: no. of characteristic times for discharge
 
                 if (parameters.verbose == 2)
                 {
@@ -269,17 +257,19 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
                         "New outflowLength = ", lambda);
                     e->exec();
                 }
-                v0 = v00 * pow(parameters.lambda, 4);
-// vStarRes = creep.residual_crack_closure / v0 / Constants::kilo;
-            }
-        lambda_is_converged = fabs(1.0 - lambda_last / lambda > tolerance)
-                                and iterations < max_iterations;
+           }
+            lambda_error = fabs(1.0 - lambda_last / lambda);
+            lambda_is_converged = (lambda_error < tolerance);
         //  Continue to refine outflow length if required
-        } while (parameters.outflow_model_on==2 and lambda_is_converged);
+        } while ((parameters.outflow_model_on==2)
+                    && (iterations < max_iterations)
+                    && not lambda_is_converged);
         file.collect(this, 0);
 
-//  For the new outflow length move the closure point, by whole elements,
-//  towards a point where bending moment is minimised without interior contact
+//  For this new outflow length move the closure point, by whole elements,
+//  towards the point at which the bending moment is minimised
+//  without crack surface contact between there and the crack tip.
+//
         short crack_surface_incursion = 0;
 //  double node_at_closure_last = node_at_closure;
         node_at_closure += 1;
@@ -305,19 +295,18 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
             }
             else
             {
-                error_last = error;
-                error = beam_profile.ClosureMoment();
-                file.collect(this, 0);
+                error_last = closure_error;
+                closure_error = beam_profile.ClosureMoment();
     //  Crudest conceivable corrector:
-                if (error * error_last < 0.0) //  i.e. error passed through zero
+                if (closure_error * error_last < 0.0) //  error transited 0
                 {
                     node_closure_move = -1;
                     closure_is_converged = 1;
                 }
                 else
                 {
-                    if (fabs(error) > fabs(error_last))   //  wrong way: reverse
-                    node_closure_move *= -1;
+                    if (fabs(closure_error) > fabs(error_last))   //  wrong way
+                    node_closure_move *= -1;    //  reverse
                 }
             }
             node_at_closure += node_closure_move;
@@ -326,7 +315,7 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
             {
                 dialog *e = new dialog;
                 e->warning("At closure length iteration ",iterations,
-                       " closure moment = ", error);
+                       " closure moment = ", closure_error);
                 e->exec();
             }
         }
@@ -334,8 +323,9 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
                and (iterations < max_iterations));
         //  But movement of closure point will change outflow throat area
         //  so refinement should be continued:
-    } while (fabs(1.0 - lambda_last / lambda > tolerance)
+    } while (fabs(1.0 - lambda_last / lambda) > tolerance
              and (parameters.outflow_model_on==2));
+
     //  COD profile vStar(zeta) is now known, and can be output if needed
         if (parameters.verbose==2)
         {
@@ -346,11 +336,11 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
         }
 
     //  Output the numerical solution
-    //  FDprofile* ptr = &beam_profile;
         beam_profile.ShowCODProfile();
         beam_profile.GetBackfillEjectPoint(zeta_backfill_ejection, wdash_max);
 
-        solution.collectProfile(beam_profile.vptra, node_at_closure);
+        solution.collectProfile(beam_profile.vptra,
+                                beam_profile.NodeAtClosure()+2);
 
     //  Flaring of pipe wall at decompression point:
         deltadstar = w_2 / Constants::pi / parameters.diameter * Constants::kilo
@@ -360,19 +350,25 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
 }   //  end SolveForCrackProfile()
 
 
-
-/* Flaring of pipe wall at decompression point:
-    deltadstar = w_2 / Constants::pi / parameters.diameter * Constants::kilo
-            + creep.diameter_res0 / parameters.diameter - 1.0;
-*/
-
 void BeamModel::crackDrivingForce(Parameters parameters,
                                   Backfill backfill,
+                                  LiquidContent liquidcontent,
                                   Creep creep)
 {
+    extern File file;
+    extern Solution solution;
+    //  Extract from FD solution, and denormalise, key COD profile parameters.
+    //  v00 becomes reference length v0 on multiplying by lambda^4:
+    v00 = 4.0 / Constants::c1
+            * sdrminus1 * sdrminus2 / parameters.sdr
+            * p1bar                                         //  * 10^05
+            / parameters.dynamic_modulus                    //  / 10^09
+            * parameters.diameter                           //  * 10^-03
+            / Constants::mega / 10.0;                       //	hence m
+    v0 = v00 * pow(lambda, 4);                              //	(m)
     z_outflow = lambda * parameters.diameter / Constants::kilo
                     * sdrminus2 / parameters.sdr;
-//  Extract key COD profile parameters from FD solution, and denormalise them
+
     w_2 = beam_profile.VStar_2() * v0;
     w_max = beam_profile.VStarMax() * v0;
     wdash_2 = beam_profile.DVStarDZeta_2() * v0 / z_outflow;
@@ -383,34 +379,49 @@ void BeamModel::crackDrivingForce(Parameters parameters,
     z_backfilled *= z_outflow;
     wdash_max *= v0 / z_outflow;
 
-//  Compute signed contributions to strain energy release rate G
-//  Irwin-Corten GIC, due to tensile strain energy input at crack tip plane 1:
+    // Flaring of pipe wall at decompression point:
+    deltadstar = w_2 / Constants::pi / parameters.diameter * Constants::kilo
+                + creep.diameter_res0 / parameters.diameter - 1.0;
+
+
+    //  Compute signed contributions to strain energy release rate G.
+    //  Irwin-Corten GIC, due to direct strain energy input @ crack tip plane 1:
     gs1_ic = Constants::pi / 8.0
-            * pow(p1bar * sdrminus2, 2)                 //  * 10^10
-            / parameters.sdr * sdrminus1
-            / parameters.dynamic_modulus                //  / 10^09
-            * parameters.diameter                       //  * 10^-03
-            / parameters.crack_width                    //  / 10^-03
-            / 100.0;                                    //  hence kJ/m^2
+                * pow(p1bar * sdrminus2, 2)             //  * 10^10
+                / parameters.sdr * sdrminus1
+                / parameters.dynamic_modulus            //  / 10^09
+                * parameters.diameter                   //  * 10^-03
+                / parameters.crack_width                //  / 10^-03
+                / 100.0;                                //  hence kJ/m^2
 
-//	Strain energy input due to residual strain in pipe wall at plane 1:
-    gs1_resid = (parameters.diameter - creep.diameter_res0);
-    gs1_resid = Constants::pi / 6.0
-            * parameters.dynamic_modulus                //  * 10^09
-            * pow(gs1_resid, 2)
-            / parameters.crack_width;                   //  / 10^-03
+    //	Strain energy input due to residual strain in pipe wall at plane 1:
+    gs1_rsid = (parameters.diameter - creep.diameter_res0);
+    gs1_rsid = Constants::pi / 6.0
+                * parameters.dynamic_modulus            //  * 10^09
+                * pow(gs1_rsid, 2)
+                / parameters.crack_width;               //  / 10^-03
 
-//  External work input to pipe wall flaps (= dUE/da) from planes 1-2:
+    //	Strain energy input due to strain energy of liquid content at plane 1:
+    gs1_liqd = p1bar * parameters.diameter * sdrminus2 / parameters.sdr;
+                                                        //  * 10^02
+    gs1_liqd = Constants::pi / 8.0
+                * pow(gs1_liqd, 2)                      //  * 10^04
+                / liquidcontent.bulk_modulus            //  / 10^09
+                * parameters.liquid_inside_pipe
+                / parameters.crack_width                //  / 10^-03
+                / 100.0;                                //  hence kJ/m^2
+
+    //  External work input to pipe wall flaps (= dUE/da) from planes 1-2:
     gue2 = parameters.diameter                          //  * 10^-03
-            * 0.5 * sdrminus1 / parameters.sdr
-            * p1bar                                     //  * 10^5
-            * v0
-            * w_integral_12
-            / parameters.crack_width                    //  / 10^-03
-            * 100;                                      //  hence kJ/m^2
+                * 0.5 * sdrminus1 / parameters.sdr
+                * p1bar                                 //  * 10^5
+                * v0
+                * w_integral_12
+                / parameters.crack_width                //  / 10^-03
+                * 100;                                  //  hence kJ/m^2
 
-//  Strain energy output at plane 2 due to bending:
-//  (Pipe Model Manual p36, NB h/r = 2.0/ (parameters.sdr-1))
+    //  Strain energy output at plane 2 due to bending:
+    //  (Pipe Model Manual p36, NB h/r = 2.0/ (parameters.sdr-1))
     gs2 =  -(
                 0.5 * parameters.dynamic_modulus *      //  * 10^09
                 (
@@ -429,11 +440,11 @@ void BeamModel::crackDrivingForce(Parameters parameters,
             ) / parameters.crack_width                  //  / 10^-03
             * Constants::giga;                          //  hence kJ/m^2
 
-//  Kinetic energy output in backfill detached at ejection point:
+    //  Kinetic energy output in backfill at ejection point:
     gk2_bf = wdash_max * parameters.adotc0 * Constants::vSonic; //  wdot
     gk2_bf = - backfill.ke_factor * pow(gk2_bf, 2);
 
-//  Kinetic energy output at plane 2 with pipe wall and any "attached" liquid:
+    //  Kinetic energy output at plane 2 with pipe wall and any attached liquid:
 //  (Pipe Model Manual. pg36)
     gk2 = -0.5 * parameters.dynamic_modulus             //  * 10^09
                     * pow(adotovercl, 2)
@@ -449,16 +460,14 @@ void BeamModel::crackDrivingForce(Parameters parameters,
                 / parameters.crack_width                //  / 10^-03
                 * Constants::mega;                      //  hence kJ/m^2
 
-    gs1 = gs1_ic + gs1_resid;
-    gue = gue2;
-    gsb = gs2;
-    gkb = gk2 + gk2_bf;
-    g0 = gs1_ic;
-    gtotal = gs1 + gsb + gkb + gue;
-    g_total = gtotal;
+    gs1 = gs1_ic + gs1_liqd + gs1_rsid;
+    g_total = gs1 + gs2 + gk2 + gk2_bf + gue2;
     if (g_total < 0.0)
         g_total = 0.0;
+    if (not(closure_is_converged && lambda_is_converged))
+        g_total = 0.0;
 
-    gg0 = gtotal / gs1_ic;
+    gg0 = g_total / gs1_ic;
+    file.collect(this, 0);
+
 }   //  end crackDrivingForce
-

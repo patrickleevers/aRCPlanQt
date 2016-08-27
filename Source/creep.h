@@ -24,7 +24,8 @@ public:
 	Creep();
 
     //  Constructor
-    //  Calculates natural diameter of pipe and crack closure due to residual strain contraction
+    //  Calculates natural diameter of pipe
+    //  and crack closure due to residual strain contraction
 	Creep(const Parameters parameters);
 
 };

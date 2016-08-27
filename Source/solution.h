@@ -25,29 +25,29 @@ public:
     int n;
 	
     vector<double> z;
-    vector <vector <double>> w;
+    vector<vector<double>> w;
 
-    vector <double> adotc0;
-    vector <double> p0bar;
-    vector <double> tempdegc;
+    vector<double> adotc0;
+    vector<double> p0bar;
+    vector<double> tempdegc;
 
-    vector <double> decompression;
-    vector <double> alpha;
-    vector <double> m;
-    vector <double> lambda;
-    vector <double> deltadstar;
-    vector <double> gs1;
-    vector <double> gue;
-    vector <double> gsb;
-    vector <double> gkb;
-    vector <double> gg0;
-    vector <double> gtotal;
-    vector <double> g0;
-    vector <double> forplot;
-    vector <short> no_crack_opening;
-    vector <short> lambda_is_converged;
-    vector <short> closure_is_converged;
-    vector <short> iterations;
+    vector<double> decompression;
+    vector<double> alpha;
+    vector<double> m;
+    vector<double> lambda;
+    vector<double> deltadstar;
+    vector<double> gs1;
+    vector<double> gue;
+    vector<double> gsb;
+    vector<double> gkb;
+    vector<double> gg0;
+    vector<double> g_total;
+    vector<double> g0;
+    vector<double> forplot;
+    vector<double> w_integral_12;
+    vector<short> lambda_is_converged;
+    vector<short> closure_is_converged;
+    vector<short> iterations;
 
     //  Null constructor
 	Solution();
@@ -59,7 +59,7 @@ public:
     void displacement(Parameters &parameters);
 
     //  Assigns crack profiles to matrix for access later when plotting in GUI
-    void collectProfile(vector<double> vptras, const int l);
+    void collectProfile(vector<double> vptras, const int points);
 
     //  Collects values provided as arguments, forming them into solution object
     void collect(const double adotc0s,
@@ -76,8 +76,8 @@ public:
                  const double gkbs,
                  const double g0s,
                  const double gg0s,
-                 const double gtotals,
-                 const short no_crack_opening,
+                 const double g_totals,
+                 const double w_integral_12,
                  const short lambda_is_converged,
                  const short closure_is_converged,
                  const short iterations);

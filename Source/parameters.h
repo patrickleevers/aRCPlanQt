@@ -42,7 +42,7 @@ public:
     double backfill_depth;
     double backfill_density;
     double solid_inside_pipe;
-    double water_inside_pipe;
+    double liquid_inside_pipe;
 
     string matid;
     double density;

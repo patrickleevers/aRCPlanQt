@@ -45,23 +45,29 @@ public:
     double deltadstar;
     double m[2];
     short max_iterations;
-    short print_opening_profile;
     double zetaclosure;
     double lambda_last;
     short iterations;
-    short no_crack_opening;
-    double gs1_ic, gs1_resid, gue2, gs2, gk2_bf, gk2, g_total;
-//  FIXME Bodge temp variables
-    double gs1, gue, gsb, gkb, g0, gg0, gtotal;
+    double gs1_ic;
+    double gs1;
+    double gs1_rsid;
+    double gs1_liqd;
+    double gue2;
+    double gs2;
+    double gk2_bf;
+    double gk2;
+    double g_total;
+    double gg0;
 
     double adotovercl;
     double adotovercl_backfilled;
     double adotclfactor;
     double adotclfactor_backfilled;
     double dynamic_shear_modulus;
-    double error;
+    double lambda_error;
+    double closure_error;
     double error_last;
-    double lambda;          //  Ratio of outflow length to mean diameter
+    double lambda;              //  Ratio of outflow length to mean diameter
     double lambda_factor;
     double p1bar;
     double p1p0r;
@@ -73,18 +79,17 @@ public:
     double v00;
     double v0;
 
-    double vStarRes;        //  FIXME
+    double vStarRes;            //  FIXME
 
-    double w_2;             //  Crack opening displacement at outflow point
-    double w_max;           //  Absolute maximum crack opening displacement
-    double wdash_2;         //  dw/dz at outflow point
-    double wdash_max;       //  dw/dz at which any backfill is ejected
-    double w2dash_2;        //  d2w/dz2 at outflow point
-    double w_integral_12;   //  Total crack opening area in outflow length
-    double w_residual;      //
+    double w_2;                 //  Crack opening displacement at outflow point
+    double w_max;               //  Absolute maximum crack opening displacement
+    double wdash_2;             //  dw/dz at outflow point
+    double wdash_max;           //  dw/dz at which any backfill is ejected
+    double w2dash_2;            //  d2w/dz2 at outflow point
+    double w_integral_12;       //  Crack opening area within outflow length
+    double w_residual;          //
 
     double z_outflow;
-
     double z_backfilled;
     double zeta_backfill_ejection;
 
@@ -109,7 +114,7 @@ public:
 //  Speed dependent properties and reset for outflow length
     void reset(const Parameters parameters,
                const Backfill backfill,
-               const WaterContent watercontent,
+               const LiquidContent liquidcontent,
                const Creep creep);
 
 //  Calculate dimensionless foundation stiffness with backfill m[0], without [1]
@@ -118,21 +123,14 @@ public:
 //  Calculate dimensionless crack speed alpha[0] with backfill, [1] without
     void crackSpeed(const Parameters parameters);
 
-
 //  Implement boundary conditions on the beam model and control its solution
 //  by iteration, using a gas discharge model to determine the outflow length
     void SolveForCrackProfile(const Parameters parameters,
                               const Creep creep);
 
-
-//  Finds final crack profile, and extracts converted physical parameters
-//  needed to evaluate crack driving force
-    void opening(Parameters parameters,
-                 Creep creep);
-
-//
     void crackDrivingForce(Parameters parameters,
                            Backfill backfill,
+                           LiquidContent liquidcontent,
                            Creep creep);
 private:
     double radius;

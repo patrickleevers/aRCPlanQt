@@ -19,7 +19,7 @@ Backfill::Backfill()
 //  Computes an effective density for backfill, to be added to that of pipe
 Backfill::Backfill(const Parameters parameters)
 {
-    ke_factor = 0.0;    //  KE / unit
+    ke_factor = 0.0;    //  KE / unit length, for calculating KE ejected
     effective_density = 0.0;
     if (parameters.is_backfilled == 2)
     {
@@ -28,5 +28,7 @@ Backfill::Backfill(const Parameters parameters)
         effective_density = ke_factor / Constants::c2
                 * pow(parameters.sdr, 2) / (parameters.sdr - 1.0);
         ke_factor *= pow(parameters.diameter, 2) / 4.0e6;
+        //  Reality check: say only +/- 45 degrees of backfill thrown off
+        ke_factor /= 4;
     }
 }   //  end constructor

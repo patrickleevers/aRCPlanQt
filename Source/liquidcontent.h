@@ -5,34 +5,36 @@
 //  http://www.sciencedirect.com/science/article/pii/S0013794412003530
 
 //  Class modelling the effect on RCP along a pipeline
-//  of water contained in the pipe.
+//  of liquid contained in the pipe.
 
-//  The water is modelled as an inertial mass, attached to the wall and
+//  The liquid is modelled as an inertial mass, attached to the wall and
 //  moving radially with it as crack opening allows the pipe to flare.
-//  The effect is expressed via an "effective" water density added to
+//  The effect is expressed via an "effective" liquid density added to
 //  the real density of the pipe wall.
 
-#ifndef _WATERCONTENT_H
-#define _WATERCONTENT_H
+#ifndef _LIQUIDCONTENT_H
+#define _LIQUIDCONTENT_H
 
 #include "Parameters.h"
 #include "liquidcontent.h"
 #include "Constants.h"
 
-class WaterContent
+class LiquidContent
 {
 public:	
     //  Null Constructor
-    WaterContent();
+    LiquidContent();
 
     //  Constructor
     //  Calculates effective density
-    WaterContent(const Parameters parameters);
+    LiquidContent(const Parameters parameters);
     //  Constructor taking parameters as arguments
-    //  Using the 'gas sector' model, represents the water as an
+    //  Using the 'gas sector' model, represents the liquid as an
     //  effective density ratio lumped at the wall, to be added to that of pipe.
 
+    double density;
     double effective_density;
+    double bulk_modulus;
 
 private:
 };

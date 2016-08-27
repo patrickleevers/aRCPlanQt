@@ -60,7 +60,7 @@ Parameters::Parameters()
     backfill_depth = 100;
     backfill_density = 2200;
     solid_inside_pipe = 0.25;
-    water_inside_pipe = 0.0;
+    liquid_inside_pipe = 0.0;
 
     h=0.0;
     crack_width=0.0;
@@ -123,7 +123,7 @@ Parameters::Parameters(ConfigFile config)
     config.readInto(backfill_depth, "backfillDepth");
     config.readInto(backfill_density, "backfillDensity");
     config.readInto(solid_inside_pipe, "solidInsidePipe");
-    config.readInto(water_inside_pipe, "waterInsidePipe");
+    config.readInto(liquid_inside_pipe, "liquidInsidePipe");
 }
 
 //  Creates the "=" operator for this class
@@ -164,7 +164,7 @@ Parameters& Parameters::operator=(const Parameters& rhs)
     backfill_depth = rhs.backfill_depth;
     backfill_density = rhs.backfill_density;
     solid_inside_pipe = rhs.solid_inside_pipe;
-    water_inside_pipe = rhs.water_inside_pipe;
+    liquid_inside_pipe = rhs.liquid_inside_pipe;
 
     return *this;
 }

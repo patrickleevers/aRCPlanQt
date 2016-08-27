@@ -4,8 +4,8 @@
 //  For the underlying model, see
 //  http://www.sciencedirect.com/science/article/pii/S0013794412003530
 
-//  Class modelling residual stress in a pipe,
-//  as measured by the diametral creep contraction in a slit ring test.
+//  Class representing a model of residual stress in a plastic pipe,
+//  as measured by the diametral creep contraction after a split ring test.
 
 #include "Constants.h"
 #include "Creep.h"
@@ -13,12 +13,11 @@
 //Null constructor
 Creep::Creep()
 {
-
-    creep_modulus_ratio=0.0;
-    diameter_res0=0.0;
-    residual_crack_closure=0.0;
-
+    creep_modulus_ratio = 0.0;
+    diameter_res0 = 0.0;
+    residual_crack_closure = 0.0;
 }
+
 
 //  Constructor
 //  Takes parameters as arguments

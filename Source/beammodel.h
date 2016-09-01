@@ -22,8 +22,8 @@
 //      zeta = z/L,
 //  and the solution is obtained using an external finite difference method.
 
-//  Energy-based fracture mechanics uses properties of the COD profile
-//  to evaluate the crack driving force.
+//  Energy-based fracture mechanics uses properties of the computed COD profile
+//  to calculate the crack driving force.
 
 #ifndef BeamModelH
 #define BeamModelH
@@ -42,6 +42,7 @@ public:
 
     double alpha[2];
     double baffle_leakage_area;
+    double beam_width;
     double deltadstar;
     double m[2];
     short max_iterations;

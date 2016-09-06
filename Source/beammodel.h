@@ -96,6 +96,8 @@ public:
 
     int l;
 
+    short error_code;
+    short node_at_contact;
     short node_at_closure;
     short lambda_is_converged;
     short closure_is_converged;

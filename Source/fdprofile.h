@@ -39,7 +39,8 @@ class FDprofile
         void resetSize(short newSize);
                                 // Resets array size, discarding data in it
 
-        void ShowCODProfile();
+        void ShowCODProfile(const double zeta_rescale_factor,
+                                const double v_rescale_factor);
         double VStarMax();
         double VStar_2();       // vStar at outflow point
         double DVStarDZeta_2(); // First derivative at outflow point
@@ -52,7 +53,7 @@ class FDprofile
         double ClosureMoment(); //  Find closure-point:crack-tip ratio of
                                 //  of dvStar2_dzeta2,
         short NodeAtMinimum();  //  Identify last positive COD node
-        short IsUnphysical();   //  Node has negative crack opening
+        short ContainsContactPoint();   //  Node has negative crack opening
         short NodeAtClosure();	//  Identify last node in FD array
         void GetBackfillEjectPoint(double& zeta_at_max_dzetadz,
                                    double& vStarDashBackfillEject);

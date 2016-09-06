@@ -450,7 +450,7 @@ void File::writeHeaders(string temp)
         << "lambdaCnvrgd?" << ","           //  c21
         << "closureError" << ","            //  c22
         << "closureCnvrgd?" << ","          //  c23
-        << "lambdaFactor" << ","            //  c24
+        << "errorCode" << ","               //  c24
         << "gs1_ic" << ","                  //  c25
         << "gs1_rsid" << ","                //  c26
         << "gs1_liqd" << ","                //  c27
@@ -523,7 +523,7 @@ void File::writeLogLine(int newline)
         << lambda_is_converged << ","       //  c21
         << closure_error << ","             //  c22
         << closure_is_converged << ","      //  c23
-        << lambda_factor << ","             //  c24
+        << error_code << ","                //  c24
         << gs1_ic << ","                    //  c25
         << gs1_rsid << ","                  //  c26
         << gs1_liqd << ","                  //  c27
@@ -588,6 +588,7 @@ void File::collect(BeamModel *beamModel, int newline)
     p1bar = beamModel -> p1bar;
     v0 = beamModel -> v0;
     vStarRes = beamModel -> vStarRes;
+    lambda_factor = beamModel -> lambda_factor;
     adotclfactor = beamModel -> adotclfactor;
     adotclfactor_backfilled = beamModel -> adotclfactor_backfilled;
     max_iterations = beamModel -> max_iterations;
@@ -600,7 +601,7 @@ void File::collect(BeamModel *beamModel, int newline)
     lambda_is_converged = beamModel -> lambda_is_converged;
     closure_error = beamModel -> closure_error;
     closure_is_converged = beamModel -> closure_is_converged;
-    lambda_factor = beamModel -> lambda_factor;
+    error_code = beamModel -> error_code;
     gs1_ic = beamModel -> gs1_ic;
     gs1_rsid = beamModel -> gs1_rsid;
     gs1_liqd = beamModel -> gs1_liqd;

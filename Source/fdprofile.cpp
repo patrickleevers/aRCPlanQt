@@ -335,7 +335,8 @@ void FDprofile::GetBackfillEjectPoint(double& zeta_at_max_dzetadz,
 } // end backfillEject()
 
 
-short FDprofile::IsUnphysical()
+short FDprofile::ContainsContactPoint()
+//  Returns first node from crack tip at which COD becomes negative
 {
     short index = -1;
     for (short i=1; i < NodeAtClosure(); i++)
@@ -347,7 +348,7 @@ short FDprofile::IsUnphysical()
         }
     }
     return index;
-}   //  end IsUnphysical()
+}   //  end ContainsContactPoint)
 
 
 short FDprofile::NodeAtMinimum()
@@ -400,8 +401,10 @@ short FDprofile::NodeAtClosure()
 }   //  end nodeAtClosure()
 
 
-void FDprofile::ShowCODProfile()
-//  Map the COD profile into a z/v array for plotting, restoring zero endpoints
+void FDprofile::ShowCODProfile(const double zeta_rescale_factor,
+                               const double v_rescale_factor)
+//  Denormalise the COD profile into a z/v array for plotting,
+//  restoring v=0 endpoints
 {
     vptra.clear();
     cod_plot_points = arraySize + 2;
@@ -409,8 +412,9 @@ void FDprofile::ShowCODProfile()
     vptra.push_back(0.0);
     for (int i=0; i<arraySize; i++)
     {
-        zeta.push_back(float(i + 1) / float(elementsPerUnitLength));
-        vptra.push_back(float(v_ptr[i]));
+        zeta.push_back(float(i + 1)
+                            / float(elementsPerUnitLength));
+        vptra.push_back(v_rescale_factor * float(v_ptr[i]));
     }
         zeta.push_back(float(arraySize + 1) / float(elementsPerUnitLength));
         vptra.push_back(0.0);

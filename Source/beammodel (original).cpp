@@ -200,7 +200,7 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
 //
 //  The first loop evaluates the beam opening profile by successively adjusting
 //  the outflow length (i.e. the length of pressure-loaded beam) according to
-//  the outflow model. It is assumed that the beam's foundation stiffness
+//  the outflow model. We initially assume that the beam's foundation stiffness
 //  closes the crack at twice this length.
 //
 //  The second loop refines each profile solution by moving this closure point
@@ -208,10 +208,9 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
 {
     extern File file;
     extern Solution solution;
-    max_iterations = 20;
+    max_iterations = 30;
     iterations = 0;
     double tolerance = 0.04;
-
 //  GUI assigns checked checkbox = 2
     if ((parameters.outflow_model_on == 2) & (parameters.verbose == 2))
     {
@@ -220,153 +219,126 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
                    parameters.lambda);
         e->exec();
     }
-
 //  Dimensionless foundation stiffness m
     stiffness();
 //	Dimensionless crack speed alpha
     crackSpeed(parameters);
-
     lambda_last = lambda;   //  Specified starting value
     lambda_is_converged = 0;
     closure_is_converged = 0;
     do
     {
-        if (parameters.outflow_model_on==2)
-            do  //  Refine outflow length using adiabatic discharge model:
+        do  //  At least once
+        {   //  Calculate outflow length using adiabatic discharge model:
+            iterations++;
+            lambda_last = lambda;   //  using value about to be updated
+            double dontNeedThis;
+            //  Dimensionless foundation stiffness m
+            stiffness();
+            //	Dimensionless crack speed
+            crackSpeed(parameters);
+            file.collect(this, 0);
+
+            beam_profile = FDprofile(alpha,
+                                    m,
+                                    zeta_backfill_ejection,
+                                    residualpressure,
+                                    parameters.elements_in_l,
+                                    node_at_closure);
+            closure_error = beam_profile.ClosureMoment();
+            beam_profile.GetBackfillEjectPoint(zeta_backfill_ejection,
+                                              dontNeedThis);
+    //  Recorded for subsequent refinement by moving closure point, if required:
+            w_integral_12 = beam_profile.IntegralVStarDZeta_12();
+            if ((w_integral_12 > 0.0) and (parameters.outflow_model_on == 2))
             {
-                iterations++;
-                lambda_last = lambda;   //  using value about to be updated
-                double dontNeedThis;
-                //  Dimensionless foundation stiffness m
-                stiffness();
-                //	Dimensionless crack speed
-                crackSpeed(parameters);
-                file.collect(this, 0);
+                OutflowProcess outflow(p1bar);
+                lambda = pow(lambda_factor
+                            * outflow.get_tStarOutflow() / w_integral_12, 0.2);
+                //	tStarOutflow: no. of characteristic times for discharge
 
-                beam_profile = FDprofile(alpha,
-                                        m,
-                                        zeta_backfill_ejection,
-                                        residualpressure,
-                                        parameters.elements_in_l,
-                                        node_at_closure);
-                closure_error = beam_profile.ClosureMoment();
-                beam_profile.GetBackfillEjectPoint(zeta_backfill_ejection,
-                                                  dontNeedThis);
-                //  Recorded for subsequent refinement by moving closure point, if required:
-                w_integral_12 = beam_profile.IntegralVStarDZeta_12();
-                if ((w_integral_12 > 0.0) and (parameters.outflow_model_on == 2))
+                if (parameters.verbose == 2)
                 {
-                    OutflowProcess outflow(p1bar);
-                    lambda = pow(lambda_factor
-                                * outflow.get_tStarOutflow() / w_integral_12, 0.2);
-                    //	tStarOutflow: no. of characteristic times for discharge
-
-                    if (parameters.verbose == 2)
-                    {
-                        dialog *e = new dialog;
-                        e->warning("alpha = ", alpha[1],
-                            "m = ", m[1],
-                            "integral_w12 = ", w_integral_12,
-                            "New outflowLength = ", lambda);
-                        e->exec();
-                    }
-               }
-                lambda_error = fabs(1.0 - lambda_last / lambda);
-                lambda_is_converged = (lambda_error < tolerance);
-            //  Continue to refine outflow length if required
-            } while ((iterations < max_iterations) && !lambda_is_converged);
-        //  Update m[] and alpha[] for this lambda:
-        stiffness();
-        crackSpeed(parameters);
+                    dialog *e = new dialog;
+                    e->warning("alpha = ", alpha[1],
+                        "m = ", m[1],
+                        "integral_w12 = ", w_integral_12,
+                        "New outflowLength = ", lambda);
+                    e->exec();
+                }
+           }
+            lambda_error = fabs(1.0 - lambda_last / lambda);
+            lambda_is_converged = (lambda_error < tolerance);
+        //  Continue to refine outflow length if required
+        } while ((parameters.outflow_model_on==2)
+                    && (iterations < max_iterations)
+                    && not lambda_is_converged);
         file.collect(this, 0);
 
 //  For this new outflow length move the closure point, by whole elements,
 //  towards the point at which the bending moment is minimised
-//  without any crack surface contact between that point and the crack tip.
-        short node_closure_move = 1;    //  Default
-        double corrector;
+//  without crack surface contact between there and the crack tip.
+//
+        short crack_surface_incursion = 0;
+//  double node_at_closure_last = node_at_closure;
+        node_at_closure += 1;
+        short node_closure_move = 1;
+        short maybe_move;
         iterations = 0;
-        error_code = 0;
-        if (parameters.outflow_model_on == 2 && lambda_is_converged)
-            do
-            {
-                iterations++;
-                //  If COD is now <0 anywhere before official closure point,
-                //  back up closure point until it isn't:
-                short move_temp = 0;        //  for the record
-                while (beam_profile.ContainsContactPoint() > -1)
-                {
-                    node_at_closure -= 1;
-                    move_temp -= 1;
-                    beam_profile = FDprofile(alpha,
-                                         m,
-                                         zeta_backfill_ejection,
-                                         residualpressure,
-                                         parameters.elements_in_l,
-                                         node_at_closure);
-                    closure_error = beam_profile.ClosureMoment();
-                }
-                error_last = closure_error;
+        if (parameters.outflow_model_on == 2) do
+        {
+            iterations++;
+            stiffness();
+            crackSpeed(parameters);
+            beam_profile = FDprofile(alpha,
+                                 m,
+                                 zeta_backfill_ejection,
+                                 residualpressure,
+                                 parameters.elements_in_l,
+                                 node_at_closure);
 
-                //  Recalculate profile after implementing preset closure-node move
-                node_at_closure += node_closure_move;
-                beam_profile = FDprofile(alpha,
-                                     m,
-                                     zeta_backfill_ejection,
-                                     residualpressure,
-                                     parameters.elements_in_l,
-                                     node_at_closure);
+//  If COD goes negative anywhere within interval, back up until it doesn't
+            if (beam_profile.IsUnphysical() > -1)
+            {
+                node_closure_move = -1;
+                crack_surface_incursion = 1;
+            }
+            else
+            {
+                error_last = closure_error;
                 closure_error = beam_profile.ClosureMoment();
-                //  Next corrector (in node intervals), using relaxn factor 1/4
-                corrector = -0.25 * float(node_closure_move)
-                                        / (1.0 - error_last / closure_error);
-                //  If last two nodes tested straddle the correct one:
+    //  Crudest conceivable corrector:
+                maybe_move = -short(0.5 * float(node_closure_move) / (1.0 - error_last / closure_error));
                 if ((closure_error * error_last < 0.0)
-                        && (abs(node_closure_move) == 1))
+                        && (abs(node_closure_move) == 1)) //  error just crossed 0
                 {
                     closure_is_converged = 1;
-                        if (fabs(closure_error) > fabs(error_last))   //  wrong one
-                            node_closure_move *= -1;    //  back to other one.
+//                    if (fabs(closure_error) > fabs(error_last))   //  wrong way
+//                        node_closure_move *= -1;    //  reverse
                 }
-                else    //  Use corrector to prepare next closure node move
+                else
                 {
                     node_closure_move = 1;
-                    if (corrector < 0.0)
-                         node_closure_move = -1;
-                    corrector = abs(corrector);
-                    if (corrector > 1.5)
-                        node_closure_move *= corrector;
-                }
-                //  Abort if move would take closure point somewhere silly
-                if (node_closure_move + node_at_closure
-                                        > 3 * parameters.elements_in_l)
-                    error_code = 1;
-                if (node_closure_move + node_at_closure
-                                        < parameters.elements_in_l)
-                    error_code = 2;
-                 file.collect(this, 0);
-                if (parameters.verbose==2)
-                {
-                    dialog *e = new dialog;
-                    e->warning("At closure length iteration ",iterations,
-                           " closure moment = ", closure_error);
-                    e->exec();
+                    if (abs(maybe_move) > 0)
+                        node_closure_move = maybe_move;
                 }
             }
-        while (!closure_is_converged
-                    and (iterations < max_iterations)
-                    and error_code == 0);
-        //  But movement of closure point will change outflow throat area,
-        //  so continue refinement:
-        w_integral_12 = beam_profile.IntegralVStarDZeta_12();
-        if (w_integral_12 > 0.0)
-        {
-            OutflowProcess outflow(p1bar);
-            lambda = pow(lambda_factor
-                        * outflow.get_tStarOutflow() / w_integral_12, 0.2);}
+            node_at_closure += node_closure_move;
+            file.collect(this, 0);
+            if (parameters.verbose==2)
+            {
+                dialog *e = new dialog;
+                e->warning("At closure length iteration ",iterations,
+                       " closure moment = ", closure_error);
+                e->exec();
+            }
+        }
+        while ((!closure_is_converged or crack_surface_incursion)
+               and (iterations < max_iterations));
+        //  But movement of closure point will change outflow throat area
+        //  so refinement should be continued:
     } while (fabs(1.0 - lambda_last / lambda) > tolerance
-             and (parameters.outflow_model_on == 2)
-             and error_code == 0);
+             and (parameters.outflow_model_on==2));
 
     //  COD profile vStar(zeta) is now known, and can be output if needed
     if (parameters.verbose==2)

@@ -23,10 +23,9 @@ guimain::guimain(QWidget *parent) :
     ui(new Ui::guimain)
 {
     ui->setupUi(this);
-
 }
 
-//Destructor
+//  Destructor
 guimain::~guimain()
 {
     delete ui;
@@ -38,136 +37,152 @@ guimain::~guimain()
 void guimain::setnames(Parameters parameters, char dropdown)
 {
 
-//Set up palettes
-QPalette *gray = new QPalette();
-gray->setColor(QPalette::Base,Qt::gray);
-gray->setColor(QPalette::Text,Qt::darkGray);
+    //  Set up palettes
+    QPalette *gray = new QPalette();
+    gray -> setColor(QPalette::Base,Qt::gray);
+    gray -> setColor(QPalette::Text,Qt::darkGray);
 
-QPalette *white = new QPalette();
-white->setColor(QPalette::Base,Qt::white);
-white->setColor(QPalette::Text,Qt::black);
+    QPalette *white = new QPalette();
+    white -> setColor(QPalette::Base,Qt::white);
+    white -> setColor(QPalette::Text,Qt::black);
 
-extern File file;
+    extern File file;
 
-if(parameters.fullscale)
-{
-    ui->fs->setCheckState(Qt::Checked);
-    ui->s4->setCheckState(Qt::Unchecked);
-}
-else
-{
-    ui->fs->setCheckState(Qt::Unchecked);
-    ui->s4->setCheckState(Qt::Checked);
-}
+    if(parameters.fullscale)
+    {
+        ui -> fs -> setCheckState(Qt::Checked);
+        ui -> s4 -> setCheckState(Qt::Unchecked);
+    }
+    else
+    {
+        ui -> fs -> setCheckState(Qt::Unchecked);
+        ui -> s4 -> setCheckState(Qt::Checked);
+    }
 
-if(parameters.is_backfilled)
-   {ui->backfill->setCheckState(Qt::Checked);}
-else
-   {ui->backfill->setCheckState(Qt::Unchecked);}
+    if(parameters.is_backfilled)
+       {ui -> backfill -> setCheckState(Qt::Checked);}
+    else
+       {ui -> backfill -> setCheckState(Qt::Unchecked);}
 
-if(parameters.outflow_model_on)
-   {ui->fixedlength->setCheckState(Qt::Checked);}
-else
-   {ui->fixedlength->setCheckState(Qt::Unchecked);}
+    if(parameters.outflow_model_on)
+       {ui -> fixedlength -> setCheckState(Qt::Checked);}
+    else
+       {ui -> fixedlength -> setCheckState(Qt::Unchecked);}
 
-ui -> materialname -> setEditable(true);
-ui -> materialname -> lineEdit() -> setReadOnly(false);
-ui -> materialname -> lineEdit() -> setAlignment(Qt::AlignRight);
+    ui ->  materialname -> setEditable(true);
+    ui -> materialname -> lineEdit() -> setReadOnly(false);
+    ui -> materialname -> lineEdit() -> setAlignment(Qt::AlignRight);
 
-ui -> pipename -> setEditable(true);
-ui -> pipename -> lineEdit() -> setReadOnly(false);
-ui -> pipename -> lineEdit() -> setAlignment(Qt::AlignRight);
+    ui -> pipename -> setEditable(true);
+    ui -> pipename -> lineEdit() -> setReadOnly(false);
+    ui -> pipename -> lineEdit() -> setAlignment(Qt::AlignRight);
 
-ui -> parameter -> setEditable(true);
-ui -> parameter -> lineEdit() -> setReadOnly(true);
-ui -> parameter -> lineEdit() -> setAlignment(Qt::AlignRight);
+    ui -> parameter -> setEditable(true);
+    ui -> parameter -> lineEdit() -> setReadOnly(true);
+    ui -> parameter -> lineEdit() -> setAlignment(Qt::AlignRight);
 
-//If dropdown is empty fill with names, alternatively change index
-if(dropdown==0)
-{
-    ui -> materialname ->insertItems(0, QStringList() << "Soft PE80" << "Generic PE100" << "Soft PE100" << "Generic PE1" << "Generic PE2");
-    ui -> pipename ->insertItems(0, QStringList() << "250mm_SDR11" << "250mm_SDR17" << "110mm_SDR11" << "110mm_SDR17" << "63mm_SDR11");
-    ui -> parameter ->insertItems(0, QStringList() << "Normalised Crack Speed" << "Initial Pressure" << "Test Temperature");
-    ui -> varCombo ->insertItems(0,QStringList() << "");
-    ui -> yCombo -> insertItems(0,QStringList() << "");
+    //If dropdown is empty fill with names, alternatively change index
+    if (dropdown == 0)
+    {
+        ui -> materialname -> insertItems(0,
+                                          QStringList() << "Generic PE1"
+                                                        << "Generic PE2"
+                                                        << "PE80"
+                                                        << "PE100"
+                                                        << "PVCu"
+                                                        << "Test");
+        ui -> pipename -> insertItems(0, QStringList() << "250mm_SDR11"
+                                                        << "250mm_SDR17"
+                                                        << "110mm_SDR11"
+                                                        << "110mm_SDR17"
+                                                        << "114mm_SDR19"
+                                                        << "63mm_SDR11");
+        ui -> parameter -> insertItems(0, QStringList() << "Normalised Crack Speed"
+                                                        << "Initial Pressure"
+                                                        << "Test Temperature");
+        ui -> varCombo -> insertItems(0, QStringList() << "");
+        ui -> yCombo -> insertItems(0, QStringList() << "");
 
-}
-else
-{
-    ui -> materialname ->lineEdit()->setText(QString::fromStdString(parameters.matid));
-    ui -> pipename ->lineEdit()->setText(QString::fromStdString(parameters.pipeid));
-}
+    }
+    else
+    {
+        ui -> materialname -> lineEdit() ->
+                                setText(QString::fromStdString(parameters.matid));
+        ui -> pipename -> lineEdit() ->
+                                setText(QString::fromStdString(parameters.pipeid));
+    }
 
-ui -> density -> setAlignment(Qt::AlignRight);
-ui -> density->setText(QString::number(parameters.density));
+    ui -> density -> setAlignment(Qt::AlignRight);
+    ui -> density-> setText(QString::number(parameters.density));
 
-ui -> dynamicmodulus -> setAlignment(Qt::AlignRight);
-ui -> dynamicmodulus ->setText(QString::number(parameters.edyn0degc));
+    ui -> dynamicmodulus -> setAlignment(Qt::AlignRight);
+    ui -> dynamicmodulus -> setText(QString::number(parameters.edyn0degc));
 
-ui -> deltadynamicmodulus -> setAlignment(Qt::AlignRight);
-ui -> deltadynamicmodulus ->setText(QString::number(parameters.dedyndt));
+    ui -> deltadynamicmodulus -> setAlignment(Qt::AlignRight);
+    ui -> deltadynamicmodulus -> setText(QString::number(parameters.dedyndt));
 
-ui -> creepmodulus -> setAlignment(Qt::AlignRight);
-ui -> creepmodulus -> setText(QString::number(parameters.creep_modulus));
+    ui -> creepmodulus -> setAlignment(Qt::AlignRight);
+    ui -> creepmodulus -> setText(QString::number(parameters.creep_modulus));
 
-ui -> dynpoissonratio -> setAlignment(Qt::AlignRight);
-ui -> dynpoissonratio -> setText(QString::number(parameters.poisson));
+    ui -> dynpoissonratio -> setAlignment(Qt::AlignRight);
+    ui -> dynpoissonratio -> setText(QString::number(parameters.poisson));
 
-ui -> from -> setAlignment(Qt::AlignRight);
-ui -> from -> setText(QString::number(0.1));
+    ui -> from -> setAlignment(Qt::AlignRight);
+    ui -> from -> setText(QString::number(0.1));
 
-ui -> to -> setAlignment(Qt::AlignRight);
-ui -> to -> setText(QString::number(1));
+    ui -> to -> setAlignment(Qt::AlignRight);
+    ui -> to -> setText(QString::number(1));
 
-ui->varTo ->setText("");
-ui->fromVar->setText("");
+    ui -> varTo -> setText("");
+    ui -> fromVar -> setText("");
 
-ui -> noofpoints -> setAlignment(Qt::AlignRight);
-ui -> noofpoints -> setText(QString::number(50));
+    ui -> noofpoints -> setAlignment(Qt::AlignRight);
+    ui -> noofpoints -> setText(QString::number(50));
 
-ui -> outsidediameter -> setAlignment(Qt::AlignRight);
-ui -> outsidediameter -> setText(QString::number(parameters.diameter));
+    ui -> outsidediameter -> setAlignment(Qt::AlignRight);
+    ui -> outsidediameter -> setText(QString::number(parameters.diameter));
 
-ui -> sdr -> setAlignment(Qt::AlignRight);
-ui -> sdr -> setText(QString::number(parameters.sdr));
+    ui -> sdr -> setAlignment(Qt::AlignRight);
+    ui -> sdr -> setText(QString::number(parameters.sdr));
 
-ui -> groovedepth -> setAlignment(Qt::AlignRight);
-ui -> groovedepth -> setText(QString::number(parameters.notch_depth));
+    ui -> groovedepth -> setAlignment(Qt::AlignRight);
+    ui -> groovedepth -> setText(QString::number(parameters.notch_depth));
 
-ui -> relativediameter -> setAlignment(Qt::AlignRight);
-ui -> relativediameter -> setText(QString::number(parameters.diameter_creep_ratio));
+    ui -> relativediameter -> setAlignment(Qt::AlignRight);
+    ui -> relativediameter ->
+                        setText(QString::number(parameters.diameter_creep_ratio));
 
-ui -> testtemperature -> setAlignment(Qt::AlignRight);
-ui -> testtemperature -> setText(QString::number(parameters.tempdegc));
+    ui -> testtemperature -> setAlignment(Qt::AlignRight);
+    ui -> testtemperature -> setText(QString::number(parameters.tempdegc));
 
-ui ->adotc0 -> setAlignment(Qt::AlignRight);
-ui ->adotc0 -> setText(QString::number(parameters.adotc0));
-ui -> adotc0->setReadOnly(true);
-ui -> adotc0->setPalette(*gray);
+    ui -> adotc0 -> setAlignment(Qt::AlignRight);
+    ui -> adotc0 -> setText(QString::number(parameters.adotc0));
+    ui -> adotc0->setReadOnly(true);
+    ui -> adotc0->setPalette(*gray);
 
-ui -> initialpressure -> setAlignment(Qt::AlignRight);
-ui -> initialpressure -> setText(QString::number(parameters.p0bar));
+    ui -> initialpressure -> setAlignment(Qt::AlignRight);
+    ui -> initialpressure -> setText(QString::number(parameters.p0bar));
 
 
-ui -> backfilldepth -> setAlignment(Qt::AlignRight);
-ui -> backfilldepth -> setText(QString::number(parameters.backfill_depth));
+    ui -> backfilldepth -> setAlignment(Qt::AlignRight);
+    ui -> backfilldepth -> setText(QString::number(parameters.backfill_depth));
 
-ui -> backfilldensity -> setAlignment(Qt::AlignRight);
-ui -> backfilldensity -> setText(QString::number(parameters.backfill_density));
+    ui -> backfilldensity -> setAlignment(Qt::AlignRight);
+    ui -> backfilldensity -> setText(QString::number(parameters.backfill_density));
 
-ui -> solidfraction -> setAlignment(Qt::AlignRight);
-ui -> solidfraction -> setText(QString::number(parameters.solid_inside_pipe));
+    ui -> solidfraction -> setAlignment(Qt::AlignRight);
+    ui -> solidfraction -> setText(QString::number(parameters.solid_inside_pipe));
 
-ui -> liquidfraction -> setAlignment(Qt::AlignRight);
-ui -> liquidfraction -> setText(QString::number(parameters.liquid_inside_pipe));
+    ui -> liquidfraction -> setAlignment(Qt::AlignRight);
+    ui -> liquidfraction -> setText(QString::number(parameters.liquid_inside_pipe));
 
-ui -> initiallength -> setAlignment(Qt::AlignRight);
-ui -> initiallength -> setText(QString::number(parameters.lambda));
+    ui -> initiallength -> setAlignment(Qt::AlignRight);
+    ui -> initiallength -> setText(QString::number(parameters.lambda));
 
-ui -> fdnumber -> setAlignment(Qt::AlignRight);
-ui -> fdnumber -> setText(QString::number(parameters.elements_in_l));
+    ui -> fdnumber -> setAlignment(Qt::AlignRight);
+    ui -> fdnumber -> setText(QString::number(parameters.elements_in_l));
 
-}
+    }
 
 //Begins the calculation process, calls various functions which eventually provide
 //a solution and the accompanying outputs
@@ -177,33 +192,33 @@ void guimain::on_Runbutton_clicked()
     extern File file;
     Parameters edited;
 
-    //Update parameters from GUI
+    // Update parameters from GUI
     edited = update();
 
-    //Check if folders for results exist
-    //All folders present returns 0
+    // Check if folders for results exist
+    // All folders present returns 0
     exists = file.check();
 
-    if(!exists)
+    if (!exists)
     {
         Simulation simulation;
         Solution solution;
 
-        if((ui->parameter->currentIndex() == 0) && (edited.from < 0.1))
+        if((ui -> parameter -> currentIndex() == 0) && (edited.from < 0.1))
         {
               dialog *e = new dialog;
-              e->warning("Normalised crack speed cannot be less than 0.1. Value has been set to 0.1.");
-              ui->from->setText(QString::number(0.1));
+              e -> warning("Normalised crack speed cannot be less than 0.1. Value has been set to 0.1.");
+              ui -> from -> setText(QString::number(0.1));
               edited.from = 0.1;
-              e->show();
+              e -> show();
         }
 
-        //Run simulation
+        // Run simulation
         solution = simulation.run(edited);
 
-        //Fill comboboxes
-        ui -> yCombo ->clear();
-        ui-> varCombo ->clear();
+        // Fill comboboxes
+        ui -> yCombo -> clear();
+        ui -> varCombo -> clear();
         ui -> yCombo -> insertItems(0, QStringList() << ""
                                     << "Decompression factor"
                                     << "Outflow length"
@@ -217,131 +232,215 @@ void guimain::on_Runbutton_clicked()
             case 0:
             {
                 ui -> varUnit->setText("");
-                for (i= (ui -> noofpoints->text().toInt()); i > 0; i--)
+                for (i= (ui -> noofpoints -> text().toInt()); i > 0; i--)
                 {
-                    ui -> varCombo ->insertItems(0,QStringList() << QString::number(solution.adotc0[i]));
+                    ui -> varCombo -> insertItems(0,
+                        QStringList() << QString::number(solution.adotc0[i]));
                 }
                 break;
             }
             case 1:
             {
-                ui -> varUnit->setText("bar");
-                for (i= (ui -> noofpoints->text().toInt()); i > 0; i--)
+                ui -> varUnit -> setText("bar");
+                for (i= (ui -> noofpoints -> text().toInt()); i > 0; i--)
                 {
-                    ui -> varCombo ->insertItems(0,QStringList() << QString::number(solution.p0bar[i]));
+                    ui -> varCombo -> insertItems(0,
+                        QStringList() << QString::number(solution.p0bar[i]));
                 }
                 break;
             }
             case 2:
             {
-                 ui -> varUnit->setText("degrees Celsius");
-                for (i= (ui -> noofpoints->text().toInt()); i > 0; i--)
+                 ui -> varUnit-> setText("degrees Celsius");
+                for (i= (ui -> noofpoints -> text().toInt()); i > 0; i--)
                 {
-                    ui -> varCombo ->insertItems(0,QStringList() << QString::number(solution.tempdegc[i]));
+                    ui -> varCombo -> insertItems(0,
+                        QStringList() << QString::number(solution.tempdegc[i]));
                 }
                 break;
             }
         }
 
-        //Plots solution
+        // Plots solution
         plotHandler(solution);
-
     }
     else
     {
-        //Create dialog and warn users that folders can't be found
+        // Create dialog and warn users that folders can't be found
         dialog *e = new dialog;
         switch(exists)
         {
             case 1:
-                e->warning("Results folder couldn't be found, new folder created");
+                e -> warning("Results folder couldn't be found, new folder created");
                 break;
             case 2:
-                e->warning("Profile folder couldn't be found, new folder created");
+                e -> warning("Profile folder couldn't be found, new folder created");
                 break;
             case 3:
-                e->warning("Log folder couldn't be found, new folder created");
+                e -> warning("Log folder couldn't be found, new folder created");
                 break;
             case 4:
-                e->warning("Please enter a valid directory");
+                e -> warning("Please enter a valid directory");
                 break;
         }
-        e->show();
+        e -> show();
     }
 }
 
-//Creates, displays and saves the crack and results plot
+// Creates, displays and saves the crack and results plot
 void guimain::plotHandler(Solution solution)
 {
-    //Plots graphs against different independent variable
-    switch(ui->parameter ->currentIndex())
+    // Plots graphs against different independent variable
+    switch(ui -> parameter  -> currentIndex())
     {
         case 0:
         {
-            plotResults(solution.adotc0, solution.decompression, "Decompression factor vs non-dimensional speed", "Non-dimensional speed", "Decompression factor",0);
-            plotResults(solution.adotc0, solution.lambda, "Outflow length vs non-dimensional speed", "Non-dimensional speed", "Outflow length",0);
-            plotResults(solution.adotc0, solution.m, "Support factor vs non-dimensional speed", "Non-dimensional speed", "Support factor",0);
-            plotResults(solution.adotc0, solution.alpha, "Speed factor vs non-dimensional speed", "Non-dimensional speed", "Speed factor",0);
-            plotResults(solution.adotc0, solution.gg0, "Non-dimensional crack driving force vs non-dimensional speed", "Non-dimensional speed", "Non-dimensional crack driving force",0);
-            plotResults(solution.adotc0, solution.g_total, "Crack driving force vs non-dimensional speed", "Non-dimensional speed", "Crack driving force",0);
+            plotResults(solution.adotc0, solution.decompression,
+                        "Decompression factor vs non-dimensional speed",
+                        "Non-dimensional speed (mach)",
+                        "Decompression factor",
+                        0);
+            plotResults(solution.adotc0, solution.lambda,
+                        "Outflow length vs non-dimensional speed",
+                        "Non-dimensional speed (mach)",
+                        "Outflow length (mean diameters)",
+                        0);
+            plotResults(solution.adotc0, solution.m,
+                        "Support factor vs non-dimensional speed",
+                        "Non-dimensional speed (mach)",
+                        "Support factor",
+                        0);
+            plotResults(solution.adotc0, solution.alpha,
+                        "Speed factor vs non-dimensional speed",
+                        "Non-dimensional speed (mach)",
+                        "Speed factor",
+                        0);
+            plotResults(solution.adotc0, solution.gg0,
+                        "Non-dimensional crack driving force vs non-dimensional speed",
+                        "Non-dimensional speed (mach)",
+                        "Non-dimensional crack driving force",
+                        0);
+            plotResults(solution.adotc0, solution.g_total,
+                        "Crack driving force vs non-dimensional speed",
+                        "Non-dimensional speed (mach)",
+                        "Crack driving force (kJ/m^2)",
+                        0);
             break;
         }
         case 1:
         {
-            plotResults(solution.p0bar, solution.decompression, "Decompression factor vs initial pressure", "Initial pressure", "Decompression factor",0);
-            plotResults(solution.p0bar, solution.lambda, "Outflow length vs initial pressure", "Initial pressure", "Outflow length",0);
-            plotResults(solution.p0bar, solution.m, "Support factor vs initial pressure", "Initial pressure", "Support factor",0);
-            plotResults(solution.p0bar, solution.alpha, "Speed factor vs initial pressure", "Initial pressure", "Speed factor",0);
-            plotResults(solution.p0bar, solution.gg0, "Non-dimensional crack driving force vs initial pressure", "Initial pressure", "Non-dimensional crack driving force",0);
-            plotResults(solution.p0bar, solution.g_total, "Crack driving force vs initial pressure", "Initial pressure", "Crack driving force",0);
+            plotResults(solution.p0bar, solution.decompression,
+                        "Decompression factor vs initial pressure",
+                        "Initial pressure (bar)",
+                        "Decompression factor",
+                        0);
+            plotResults(solution.p0bar, solution.lambda,
+                        "Outflow length vs initial pressure",
+                        "Initial pressure (bar)",
+                        "Outflow length (mean diameters)",
+                        0);
+            plotResults(solution.p0bar, solution.m,
+                        "Support factor vs initial pressure",
+                        "Initial pressure (bar)",
+                        "Support factor",
+                        0);
+            plotResults(solution.p0bar, solution.alpha,
+                        "Speed factor vs initial pressure",
+                        "Initial pressure (bar)",
+                        "Speed factor",
+                        0);
+            plotResults(solution.p0bar, solution.gg0,
+                        "Non-dimensional crack driving force vs initial pressure",
+                        "Initial pressure (bar)",
+                        "Non-dimensional crack driving force",
+                        0);
+            plotResults(solution.p0bar, solution.g_total,
+                        "Crack driving force vs initial pressure",
+                        "Initial pressure",
+                        "Crack driving force (kJ/m^2)",
+                        0);
             break;
         }
         case 2:
         {
-            plotResults(solution.tempdegc, solution.decompression, "Decompression factor vs temperature", "Temperature", "Decompression factor",0);
-            plotResults(solution.tempdegc, solution.lambda, "Outflow length vs temperature", "Temperature", "Outflow length",0);
-            plotResults(solution.tempdegc, solution.m, "Support factor vs temperature", "Temperature", "Support factor",0);
-            plotResults(solution.tempdegc, solution.alpha, "Speed factor vs temperature", "Temperature", "Speed factor",0);
-            plotResults(solution.tempdegc, solution.gg0, "Non-dimensional crack driving force vs temperature", "Temperature", "Non-dimensional crack driving force",0);
-            plotResults(solution.tempdegc, solution.g_total, "Crack driving force vs temperature", "Temperature", "Crack driving force",0);
+            plotResults(solution.tempdegc, solution.decompression,
+                        "Decompression factor vs temperature",
+                        "Temperature (°C)", "Decompression factor",
+                        0);
+            plotResults(solution.tempdegc, solution.lambda,
+                        "Outflow length vs temperature",
+                        "Temperature (°C)",
+                        "Outflow length (mean diameters)",
+                        0);
+            plotResults(solution.tempdegc, solution.m,
+                        "Support factor vs temperature",
+                        "Temperature (°C)",
+                        "Support factor",
+                        0);
+            plotResults(solution.tempdegc, solution.alpha,
+                        "Speed factor vs temperature",
+                        "Temperature (°C)", "Speed factor",
+                        0);
+            plotResults(solution.tempdegc, solution.gg0,
+                        "Non-dimensional crack driving force vs temperature",
+                        "Temperature (°C)",
+                        "Non-dimensional crack driving force",
+                        0);
+            plotResults(solution.tempdegc, solution.g_total,
+                        "Crack driving force vs temperature",
+                        "Temperature (°C)",
+                        "Crack driving force (kJ/m^2)",
+                        0);
             break;
         }
     }
 
     // Plots crack profile in colours according to whether the method converged or not
-    solution_not_converged = !(solution.lambda_is_converged[solution.k] * solution.closure_is_converged[solution.k]);
+    solution_not_converged = !(solution.lambda_is_converged[solution.k]
+                                * solution.closure_is_converged[solution.k]);
     if (solution_not_converged)
     {
-        plotProfiles(solution.z, solution.w[solution.k], "Crack displacement profile", "Distance behind crack tip", "Crack opening displacement",0,0);
+        plotProfiles(solution.z, solution.w[solution.k],
+                "Crack displacement profile",
+                "Distance behind crack tip",
+                "Crack opening displacement (mm)",0,0);
     }
     else
     {
-        plotProfiles(solution.z, solution.w[solution.k], "Crack displacement profile", "Distance behind crack tip", "Crack opening displacement",0,1);
+        plotProfiles(solution.z, solution.w[solution.k],
+                "Crack displacement profile",
+                "Distance behind crack tip",
+                "Crack opening displacement (mm)",0,1);
     }
 }
 
 
-//Plots the crack profiles using the qtcustomplot class
-void guimain::plotProfiles(vector<double> x, vector<double> y, string title, string xtitle, string ytitle, char savestate, char valid)
+//  Plots the crack profiles using the qtcustomplot class
+void guimain::plotProfiles(vector<double> x,
+                           vector<double> y,
+                           string title,
+                           string xtitle,
+                           string ytitle,
+                           char savestate,
+                           char valid)
 {
-
     extern File file;
 
     path = file.directory + "Profiles/" + title;
     ui -> Crackplot -> addGraph();
 
-    //Sets colour depending on method convergence
-    if(valid==1)
+    //  Sets colour depending on method convergence
+    if (valid == 1)
     {
-        ui -> Crackplot -> graph(0) ->setPen(QPen(Qt::green));
+        ui -> Crackplot -> graph(0) -> setPen(QPen(Qt::green));
     }
     else
     {
-        ui -> Crackplot -> graph(0) ->setPen(QPen(Qt::red));
+        ui -> Crackplot -> graph(0) -> setPen(QPen(Qt::red));
     }
 
-    ui -> Crackplot -> graph(0)->setLineStyle(QCPGraph::lsNone);
-    ui -> Crackplot -> graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCross, 4));
+    ui -> Crackplot -> graph(0) -> setLineStyle(QCPGraph::lsNone);
+    ui -> Crackplot -> graph(0) -> setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCross, 4));
 
     //Converts std vectors to QVectors for use by QCPPainter
     QVector<double> Qx = QVector<double>::fromStdVector(x);
@@ -519,8 +618,8 @@ void guimain::on_action_Load_triggered()
             Parameters temp(config);
 
             dialog *e = new dialog;
-            e->warning("caseInputData.txt was loaded successfully");
-            e->show();
+            e -> warning("caseInputData.txt was loaded successfully");
+            e -> show();
 
             setnames(temp,1);
             break;
@@ -528,16 +627,14 @@ void guimain::on_action_Load_triggered()
         case 1:
         {
             dialog *e = new dialog;
-            e->warning("caseInputData.txt could not be found in: \n \n" + file.directory);
-            e->show();
+            e -> warning("caseInputData.txt could not be found in: \n \n" + file.directory);
+            e -> show();
             break;
         }
-
     }
-
 }
 
-//Saves "caseInputData.txt" using the values in parameter
+//  Saves "caseInputData.txt" using the values in parameter
 void guimain::on_action_Save_triggered()
 {
     extern File file;
@@ -547,38 +644,45 @@ void guimain::on_action_Save_triggered()
     dialog *e = new dialog;
     file_name = "caseInputData.txt";
 
-    //Uses output of hander to switch cases, either saving the file or warning
-    //the user it won't work
-    if(!file.caseHandler(temp, file_name))
+    //  Uses output of hander to switch cases, either saving the file or warning
+    //  the user it won't work
+    if (!file.caseHandler(temp, file_name))
     {
-        e->warning("caseInputData.txt saved successfully");
+        e -> warning("caseInputData.txt saved successfully");
 
     }
     else
     {
-        e->warning(file_name + " not saved successfully, please enter a viable name");
+        e -> warning(file_name + " not saved successfully, please enter a viable name");
     }
-    e->show();
+    e -> show();
 }
 
-//Displays about dialog
+// Displays about dialog
 void guimain::on_actionAbout_triggered()
 {
     about *d = new about;
-    d->show();
-    d->setWindowTitle("About");
+    d -> show();
+    d -> setWindowTitle("About");
 }
 
-//Selects normalised crack velocity and displays graph
+// Selects normalised crack velocity and displays graph
 void guimain::on_varCombo_activated(int index)
 {
     extern Solution solution;
 
-    //Plots crack profiles with colours depending on method convergence
-    if(index != 0)
+    // Plots crack profiles with colours depending on method convergence
+    if (index != 0)
     {
-        short solution_not_converged = !(solution.lambda_is_converged[index+1] && solution.closure_is_converged[index+1]);
-        plotProfiles(solution.z, solution.w[index+1], "Crack displacement profile", "Distance behind crack tip", "Crack opening displacement",0,solution_not_converged);
+        short solution_not_converged = !(solution.lambda_is_converged[index+1]
+                                    && solution.closure_is_converged[index+1]);
+        plotProfiles(solution.z,
+                     solution.w[index+1],
+                    "Crack displacement profile",
+                    "Distance behind crack tip (diameters)",
+                    "Crack opening displacement (mm)",
+                    0,
+                    solution_not_converged);
     }
     else
     {
@@ -586,23 +690,23 @@ void guimain::on_varCombo_activated(int index)
     }
 }
 
-//Selects the x Axis variable and plots graph assuming y Axis variable has been selected
+//  Selects the x Axis variable and plots graph assuming y Axis variable has been selected
 void guimain::on_yCombo_activated(int index)
 {
     extern Solution solution;
     qunicodechar *degrees = new qunicodechar(176);
     QString tempxaxis;
     QString tempyaxis1 = "Decompression factor";
-    QString tempyaxis2 = "Outflow length";
+    QString tempyaxis2 = "Outflow length (mean diameters)";
     QString tempyaxis3 = "Support factor";
     QString tempyaxis4 = "Speed factor";
     QString tempyaxis5 = "Non-dimensional crack driving force";
-    QString tempyaxis6 = "Crack driving force";
+    QString tempyaxis6 = "Crack driving force (kJ/m^2)";
 
     if(index != 0)
     {
-        //Plots graphs against different independent variable
-        switch(ui -> parameter ->currentIndex())
+        // Plots graphs against different independent variable
+        switch(ui -> parameter -> currentIndex())
         {
             case 0:
             {
@@ -610,27 +714,57 @@ void guimain::on_yCombo_activated(int index)
                 switch (index)
                 {
                     case 1:{
-                        plotResults(solution.adotc0, solution.decompression, "Decompression factor vs non-dimensional speed", tempxaxis, tempyaxis1,0);
+                        plotResults(solution.adotc0,
+                                    solution.decompression,
+                               "Decompression factor vs non-dimensional speed",
+                                    tempxaxis,
+                                    tempyaxis1,
+                                    0);
                         break;
                           }
                     case 2:{
-                        plotResults(solution.adotc0, solution.lambda, "Outflow length vs non-dimensional speed", tempxaxis, tempyaxis2,0);
+                        plotResults(solution.adotc0,
+                                    solution.lambda,
+                                    "Outflow length vs non-dimensional speed",
+                                    tempxaxis,
+                                    tempyaxis2,
+                                    0);
                         break;
                           }
                     case 3:{
-                        plotResults(solution.adotc0, solution.m, "Support factor vs non-dimensional speed", tempxaxis, tempyaxis3,0);
+                        plotResults(solution.adotc0,
+                                    solution.m,
+                                    "Support factor vs non-dimensional speed",
+                                    tempxaxis,
+                                    tempyaxis3,
+                                    0);
                         break;
                           }
                     case 4:{
-                        plotResults(solution.adotc0, solution.alpha, "Speed factor vs non-dimensional speed", tempxaxis, tempyaxis4,0);
+                        plotResults(solution.adotc0,
+                                    solution.alpha,
+                                    "Speed factor vs non-dimensional speed",
+                                    tempxaxis,
+                                    tempyaxis4,
+                                    0);
                         break;
                           }
                     case 5:{
-                        plotResults(solution.adotc0, solution.gg0, "Non-dimensional crack driving force vs non-dimensional speed", tempxaxis, tempyaxis5,0);
+                        plotResults(solution.adotc0,
+                                    solution.gg0,
+                "Non-dimensional crack driving force vs non-dimensional speed",
+                                    tempxaxis,
+                                    tempyaxis5,
+                                    0);
                         break;
                           }
                     case 6:{
-                        plotResults(solution.adotc0, solution.g_total, "Crack driving force vs non-dimensional speed", tempxaxis, tempyaxis6,0);
+                        plotResults(solution.adotc0,
+                                    solution.g_total,
+                                "Crack driving force vs non-dimensional speed",
+                                    tempxaxis,
+                                    tempyaxis6,
+                                    0);
                         break;
                           }
                 }
@@ -642,27 +776,54 @@ void guimain::on_yCombo_activated(int index)
                 switch (index)
                 {
                     case 1:{
-                        plotResults(solution.p0bar, solution.decompression, "Decompression factor vs initial pressure", tempxaxis, tempyaxis1,0);
+                        plotResults(solution.p0bar,
+                                    solution.decompression,
+                                    "Decompression factor vs initial pressure",
+                                    tempxaxis,
+                                    tempyaxis1,
+                                    0);
                         break;
                           }
                     case 2:{
-                        plotResults(solution.p0bar, solution.lambda, "Outflow length vs initial pressure", tempxaxis, tempyaxis2,0);
+                        plotResults(solution.p0bar,
+                                    solution.lambda,
+                                    "Outflow length vs initial pressure",
+                                    tempxaxis,
+                                    tempyaxis2,
+                                    0);
                         break;
                           }
                     case 3:{
-                        plotResults(solution.p0bar, solution.m, "Support factor vs initial pressure", tempxaxis, tempyaxis3,0);
+                        plotResults(solution.p0bar, solution.m,
+                                    "Support factor vs initial pressure",
+                                    tempxaxis,
+                                    tempyaxis3,
+                                    0);
                         break;
                           }
                     case 4:{
-                        plotResults(solution.p0bar, solution.alpha, "Speed factor vs initial pressure", tempxaxis, tempyaxis4,0);
+                        plotResults(solution.p0bar, solution.alpha,
+                                    "Speed factor vs initial pressure",
+                                    tempxaxis,
+                                    tempyaxis4,
+                                    0);
                         break;
                           }
                     case 5:{
-                        plotResults(solution.p0bar, solution.gg0, "Non-dimensional crack driving force vs initial pressure", tempxaxis, tempyaxis5,0);
+                        plotResults(solution.p0bar, solution.gg0,
+                    "Non-dimensional crack driving force vs initial pressure",
+                                    tempxaxis,
+                                    tempyaxis5,
+                                    0);
                         break;
                           }
                     case 6:{
-                        plotResults(solution.p0bar, solution.g_total, "Crack driving force vs initial pressure", tempxaxis, tempyaxis6,0);
+                        plotResults(solution.p0bar,
+                                    solution.g_total,
+                                    "Crack driving force vs initial pressure",
+                                    tempxaxis,
+                                    tempyaxis6,
+                                    0);
                         break;
                           }
                 }
@@ -670,31 +831,62 @@ void guimain::on_yCombo_activated(int index)
             }
             case 2:
             {
-                tempxaxis = "Temperature (" + QString::fromUtf16(degrees,-1) + QString::fromStdString("C)");
+                tempxaxis = "Temperature ("
+                        + QString::fromUtf16(degrees,-1)
+                        + QString::fromStdString("C)");
                 switch (index)
                 {
                     case 1:{
-                        plotResults(solution.tempdegc, solution.decompression, "Decompression factor vs temperature", tempxaxis, tempyaxis1,0);
+                        plotResults(solution.tempdegc,
+                                    solution.decompression,
+                                    "Decompression factor vs temperature",
+                                    tempxaxis,
+                                    tempyaxis1,
+                                    0);
                         break;
                           }
                     case 2:{
-                        plotResults(solution.tempdegc, solution.lambda, "Outflow length vs temperature", tempxaxis, tempyaxis2,0);
+                        plotResults(solution.tempdegc,
+                                    solution.lambda,
+                                    "Outflow length vs temperature",
+                                    tempxaxis,
+                                    tempyaxis2,
+                                    0);
                         break;
                           }
                     case 3:{
-                        plotResults(solution.tempdegc, solution.m, "Support factor vs temperature", tempxaxis, tempyaxis3,0);
+                        plotResults(solution.tempdegc,
+                                    solution.m,
+                                    "Support factor vs temperature",
+                                    tempxaxis,
+                                    tempyaxis3,
+                                    0);
                         break;
                           }
                     case 4:{
-                        plotResults(solution.tempdegc, solution.alpha, "Speed factor vs temperature", tempxaxis, tempyaxis4,0);
+                        plotResults(solution.tempdegc,
+                                    solution.alpha,
+                                    "Speed factor vs temperature",
+                                    tempxaxis,
+                                    tempyaxis4,
+                                    0);
                         break;
                           }
                     case 5:{
-                        plotResults(solution.tempdegc, solution.gg0, "Non-dimensional crack driving force vs temperature", tempxaxis, tempyaxis5,0);
+                        plotResults(solution.tempdegc, solution.gg0,
+                                    "Non-dimensional crack driving force vs temperature",
+                                    tempxaxis,
+                                    tempyaxis5,
+                                    0);
                         break;
                           }
                     case 6:{
-                        plotResults(solution.tempdegc, solution.g_total, "Crack driving force vs temperature", tempxaxis, tempyaxis6,0);
+                        plotResults(solution.tempdegc,
+                                    solution.g_total,
+                                    "Crack driving force vs temperature",
+                                    tempxaxis,
+                                    tempyaxis6,
+                                    0);
                         break;
                           }
                 }
@@ -708,57 +900,57 @@ void guimain::on_yCombo_activated(int index)
     }
 }
 
-//Sets variables within independent variables pane as read only depending on the independent variable set.
-//Also changes the range of the independent variable depending on what is selected.
+//  Sets variables within independent variables pane as read-only depending on the independent variable set.
+//  Also changes the range of the independent variable depending on what is selected.
 void guimain::on_parameter_activated(int index)
 {
     ui -> from -> setText(QString::number(Parameters::from_lib[index]));
     ui -> to -> setText(QString::number(Parameters::to_lib[index]));
 
     QPalette *gray = new QPalette();
-    gray->setColor(QPalette::Base,Qt::gray);
-    gray->setColor(QPalette::Text,Qt::darkGray);
+    gray -> setColor(QPalette::Base,Qt::gray);
+    gray -> setColor(QPalette::Text,Qt::darkGray);
 
     QPalette *white = new QPalette();
-    white->setColor(QPalette::Base,Qt::white);
-    white->setColor(QPalette::Text,Qt::black);
+    white -> setColor(QPalette::Base,Qt::white);
+    white -> setColor(QPalette::Text,Qt::black);
 
     qunicodechar *degrees = new qunicodechar(176);
 
     switch (index)
     {
         case 0:{
-            ui->adotc0->setReadOnly(true);
-            ui -> adotc0->setReadOnly(true);
-            ui -> adotc0->setPalette(*gray);
-            ui ->testtemperature->setReadOnly(false);
-            ui -> testtemperature->setPalette(*white);
-            ui ->initialpressure->setReadOnly(false);
-            ui -> initialpressure->setPalette(*white);
-            ui->varTo ->setText("");
-            ui->fromVar->setText("");
+            ui -> adotc0 -> setReadOnly(true);
+            ui -> adotc0 -> setReadOnly(true);
+            ui -> adotc0 -> setPalette(*gray);
+            ui -> testtemperature -> setReadOnly(false);
+            ui -> testtemperature -> setPalette(*white);
+            ui -> initialpressure -> setReadOnly(false);
+            ui -> initialpressure -> setPalette(*white);
+            ui -> varTo -> setText("");
+            ui -> fromVar -> setText("");
             break;
               }
         case 1:{
-            ui->initialpressure->setReadOnly(true);
-            ui -> initialpressure->setReadOnly(true);
-            ui -> initialpressure->setPalette(*gray);
-            ui ->adotc0->setReadOnly(false);
-            ui ->adotc0->setPalette(*white);
-            ui ->testtemperature->setReadOnly(false);
-            ui -> testtemperature->setPalette(*white);
-            ui->varTo ->setText("bar");
-            ui->fromVar->setText("bar");
+            ui -> initialpressure -> setReadOnly(true);
+            ui -> initialpressure -> setReadOnly(true);
+            ui -> initialpressure -> setPalette(*gray);
+            ui -> adotc0 -> setReadOnly(false);
+            ui -> adotc0 -> setPalette(*white);
+            ui -> testtemperature -> setReadOnly(false);
+            ui -> testtemperature -> setPalette(*white);
+            ui -> varTo -> setText("bar");
+            ui -> fromVar -> setText("bar");
             break;
               }
         case 2:{
-            ui ->testtemperature->setReadOnly(true);
-            ui -> testtemperature->setReadOnly(true);
-            ui -> testtemperature->setPalette(*gray);
-            ui ->adotc0->setReadOnly(false);
-            ui ->adotc0->setPalette(*white);
-            ui ->initialpressure->setReadOnly(false);
-            ui -> initialpressure->setPalette(*white);
+            ui -> testtemperature -> setReadOnly(true);
+            ui -> testtemperature -> setReadOnly(true);
+            ui -> testtemperature -> setPalette(*gray);
+            ui  -> adotc0 -> setReadOnly(false);
+            ui  -> adotc0 -> setPalette(*white);
+            ui -> initialpressure -> setReadOnly(false);
+            ui -> initialpressure -> setPalette(*white);
             ui -> varTo -> setText(QString::fromUtf16(degrees,-1) + QString::fromStdString("C"));
             ui -> fromVar -> setText(QString::fromUtf16(degrees,-1) + QString::fromStdString("C"));
             break;
@@ -769,95 +961,95 @@ void guimain::on_parameter_activated(int index)
 void guimain::on_fixedlength_clicked(bool checked)
 {
     QPalette *gray = new QPalette();
-    gray->setColor(QPalette::Base,Qt::gray);
-    gray->setColor(QPalette::Text,Qt::darkGray);
+    gray -> setColor(QPalette::Base,Qt::gray);
+    gray -> setColor(QPalette::Text,Qt::darkGray);
 
     QPalette *white = new QPalette();
-    white->setColor(QPalette::Base,Qt::white);
-    white->setColor(QPalette::Text,Qt::black);
+    white -> setColor(QPalette::Base,Qt::white);
+    white -> setColor(QPalette::Text,Qt::black);
 
     if (checked == 1){
-        ui->initiallength -> setReadOnly(true);
+        ui -> initiallength -> setReadOnly(true);
         ui -> initiallength -> setPalette(*gray);
     }
     else
     {
-        ui->initiallength -> setReadOnly(false);
+        ui -> initiallength -> setReadOnly(false);
         ui -> initiallength -> setPalette(*white);
     }
 }
 
 void guimain::on_materialbutton_clicked()
 {
-    ui->materialframe->setFixedHeight(540);
-    ui->debuggingframe->setFixedHeight(0);
-    ui->pipeframe->setFixedHeight(0);
-    ui->testframe->setFixedHeight(0);
-    ui->variableframe->setFixedHeight(0);
-    ui->density->setFocus();
+    ui -> materialframe -> setFixedHeight(540);
+    ui -> debuggingframe -> setFixedHeight(0);
+    ui -> pipeframe -> setFixedHeight(0);
+    ui -> testframe -> setFixedHeight(0);
+    ui -> variableframe -> setFixedHeight(0);
+    ui -> density -> setFocus();
 }
 
 void guimain::on_pipebutton_clicked()
 {
-    ui->materialframe->setFixedHeight(0);
-    ui->debuggingframe->setFixedHeight(0);
-    ui->pipeframe->setFixedHeight(540);
-    ui->testframe->setFixedHeight(0);
-    ui->variableframe->setFixedHeight(0);
-    ui->outsidediameter->setFocus();
+    ui -> materialframe -> setFixedHeight(0);
+    ui -> debuggingframe -> setFixedHeight(0);
+    ui -> pipeframe -> setFixedHeight(540);
+    ui -> testframe -> setFixedHeight(0);
+    ui -> variableframe -> setFixedHeight(0);
+    ui -> outsidediameter -> setFocus();
 }
 
 void guimain::on_testbutton_clicked()
 {
-    ui->materialframe->setFixedHeight(0);
-    ui->debuggingframe->setFixedHeight(0);
-    ui->pipeframe->setFixedHeight(0);
-    ui->testframe->setFixedHeight(540);
-    ui->variableframe->setFixedHeight(0);
-    ui->backfilldepth->setFocus();
+    ui -> materialframe -> setFixedHeight(0);
+    ui -> debuggingframe -> setFixedHeight(0);
+    ui -> pipeframe -> setFixedHeight(0);
+    ui -> testframe -> setFixedHeight(540);
+    ui -> variableframe -> setFixedHeight(0);
+    ui -> backfilldepth -> setFocus();
 }
 
 void guimain::on_variablebutton_clicked()
 {
-    ui->materialframe->setFixedHeight(0);
-    ui->debuggingframe->setFixedHeight(0);
-    ui->pipeframe->setFixedHeight(0);
-    ui->testframe->setFixedHeight(0);
-    ui->variableframe->setFixedHeight(540);
-    ui->from->setFocus();
+    ui -> materialframe -> setFixedHeight(0);
+    ui -> debuggingframe -> setFixedHeight(0);
+    ui -> pipeframe -> setFixedHeight(0);
+    ui -> testframe -> setFixedHeight(0);
+    ui -> variableframe -> setFixedHeight(540);
+    ui -> from -> setFocus();
 }
 
 void guimain::on_Debuggingbutton_clicked()
 {
-    ui->materialframe->setFixedHeight(0);
-    ui->debuggingframe->setFixedHeight(540);
-    ui->pipeframe->setFixedHeight(0);
-    ui->testframe->setFixedHeight(0);
-    ui->variableframe->setFixedHeight(0);
-    ui->verbose->setFocus();
+    ui -> materialframe -> setFixedHeight(0);
+    ui -> debuggingframe -> setFixedHeight(540);
+    ui -> pipeframe -> setFixedHeight(0);
+    ui -> testframe -> setFixedHeight(0);
+    ui -> variableframe -> setFixedHeight(0);
+    ui -> verbose -> setFocus();
 }
 
 void guimain::on_backfill_clicked(bool checked)
 {
     QPalette *gray = new QPalette();
-    gray->setColor(QPalette::Base,Qt::gray);
-    gray->setColor(QPalette::Text,Qt::darkGray);
+    gray -> setColor(QPalette::Base,Qt::gray);
+    gray -> setColor(QPalette::Text,Qt::darkGray);
 
     QPalette *white = new QPalette();
-    white->setColor(QPalette::Base,Qt::white);
-    white->setColor(QPalette::Text,Qt::black);
+    white -> setColor(QPalette::Base,Qt::white);
+    white -> setColor(QPalette::Text,Qt::black);
 
     if (checked == 1){
-        ui->backfilldepth-> setReadOnly(false);
+        ui -> backfilldepth -> setReadOnly(false);
         ui -> backfilldepth -> setPalette(*white);
-        ui-> backfilldensity -> setReadOnly(false);
+        ui -> backfilldensity -> setReadOnly(false);
         ui -> backfilldensity -> setPalette(*white);
     }
     else
     {
-        ui->backfilldepth-> setReadOnly(true);
+        ui -> backfilldepth -> setReadOnly(true);
         ui -> backfilldepth -> setPalette(*gray);
-        ui->backfilldensity -> setReadOnly(true);
+        ui -> backfilldensity -> setReadOnly(true);
         ui -> backfilldensity -> setPalette(*gray);
     }
 }

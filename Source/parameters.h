@@ -25,9 +25,9 @@ public:
     static double creepmodulus_lib[6];
     static double poisson_lib[6];
 
-    static string pipeid_lib[5];
-    static double diameter_lib[5];
-    static double sdr_lib[5];
+    static string pipeid_lib[6];
+    static double diameter_lib[6];
+    static double sdr_lib[6];
     static double notchdepth_lib[5];
     static double diametercreepratio_lib[5];
 
@@ -64,7 +64,6 @@ public:
     short verbose;
     int outflow_model_on;
     double lambda;
-    int single_mode;
     int range_number;
     int elements_in_l;
     double adotc0;

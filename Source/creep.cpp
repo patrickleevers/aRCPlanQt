@@ -29,7 +29,8 @@ Creep::Creep(const Parameters parameters)
     creep_modulus_ratio = parameters.creep_modulus / parameters.dynamic_modulus;
 
     diameter_res0 = parameters.diameter / ((1.0 - creep_modulus_ratio)
-                    + creep_modulus_ratio / parameters.diameter_creep_ratio);
+                    + creep_modulus_ratio * 100.0
+                                           / parameters.diameter_creep_ratio);
 
     residual_crack_closure = (parameters.diameter - diameter_res0)
                                 * Constants::pi;

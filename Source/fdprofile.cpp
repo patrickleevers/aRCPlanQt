@@ -412,7 +412,7 @@ void FDprofile::ShowCODProfile(const double zeta_rescale_factor,
     vptra.push_back(0.0);
     for (int i=0; i<arraySize; i++)
     {
-        zeta.push_back(float(i + 1)
+        zeta.push_back(zeta_rescale_factor * float(i + 1)
                             / float(elementsPerUnitLength));
         vptra.push_back(v_rescale_factor * float(v_ptr[i]));
     }

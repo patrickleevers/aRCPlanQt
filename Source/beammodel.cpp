@@ -32,16 +32,16 @@ BeamModel::BeamModel(const Parameters parameters)
     extern File file;
 
 //  Residual stress in pipe
-    residualpressure = 2.0 / 3.0 * parameters.dynamic_modulus
+    residualpressure = 2.0 / 300.0 * parameters.dynamic_modulus
                         / pow(parameters.sdr / sdrminus1, 3)
-                        * (1.0 - parameters.diameter_creep_ratio);
+                        * (100.0 - parameters.diameter_creep_ratio);
 //  Dimensionless virtual crack opening at tip, representing residual strain
 //    vStarRes = creep.residual_crack_closure / v0 / Constants::kilo;
 
 //  Proportion of internal volume available for expansion
-    pipe_volume_availability = 1.0 - parameters.liquid_inside_pipe;
+    pipe_volume_availability = 1.0 - 0.01 * parameters.liquid_inside_pipe;
     if (not parameters.fullscale)
-         pipe_volume_availability -= parameters.solid_inside_pipe;
+         pipe_volume_availability -= 0.01 * parameters.solid_inside_pipe;
 
 //  Parameters for equivalent beam model
     dynamic_shear_modulus = parameters.dynamic_modulus
@@ -226,11 +226,11 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
 //	Dimensionless crack speed alpha
     crackSpeed(parameters);
 
-    lambda_last = lambda;   //  Specified starting value
-    lambda_is_converged = 0;
-    closure_is_converged = 0;
+//    lambda_last = lambda;   //  Specified starting value
     do
     {
+        lambda_is_converged = 0;
+        closure_is_converged = 0;
         if (parameters.outflow_model_on==2)
             do  //  Refine outflow length using adiabatic discharge model:
             {
@@ -252,13 +252,16 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
                 closure_error = beam_profile.ClosureMoment();
                 beam_profile.GetBackfillEjectPoint(zeta_backfill_ejection,
                                                   dontNeedThis);
-                //  Recorded for subsequent refinement by moving closure point, if required:
+                //  For subsequent refinement by moving closure point, if reqd:
                 w_integral_12 = beam_profile.IntegralVStarDZeta_12();
-                if ((w_integral_12 > 0.0) and (parameters.outflow_model_on == 2))
+                if ((w_integral_12 > 0.0)
+                        and (parameters.outflow_model_on == 2))
                 {
                     OutflowProcess outflow(p1bar);
                     lambda = pow(lambda_factor
-                                * outflow.get_tStarOutflow() / w_integral_12, 0.2);
+                                * outflow.get_tStarOutflow()
+                                 / w_integral_12, 0.2);
+                    lambda = sqrt(lambda * lambda_last);
                     //	tStarOutflow: no. of characteristic times for discharge
 
                     if (parameters.verbose == 2)
@@ -281,8 +284,8 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
         file.collect(this, 0);
 
 //  For this new outflow length move the closure point, by whole elements,
-//  towards the point at which the bending moment is minimised
-//  without any crack surface contact between that point and the crack tip.
+//  towards the point at which the beam bending moment is minimised while
+//  there is no crack surface contact between that point and the crack tip.
         short node_closure_move = 1;    //  Default
         double corrector;
         iterations = 0;
@@ -297,7 +300,7 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
                 while (beam_profile.ContainsContactPoint() > -1)
                 {
                     node_at_closure -= 1;
-                    move_temp -= 1;
+                    move_temp -= 1;     //  FIXME: use this?
                     beam_profile = FDprofile(alpha,
                                          m,
                                          zeta_backfill_ejection,
@@ -308,7 +311,7 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
                 }
                 error_last = closure_error;
 
-                //  Recalculate profile after implementing preset closure-node move
+                //  Recalculate profile after doing planned closure-node move
                 node_at_closure += node_closure_move;
                 beam_profile = FDprofile(alpha,
                                      m,
@@ -325,7 +328,7 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
                         && (abs(node_closure_move) == 1))
                 {
                     closure_is_converged = 1;
-                        if (fabs(closure_error) > fabs(error_last))   //  wrong one
+                        if (fabs(closure_error) > fabs(error_last))
                             node_closure_move *= -1;    //  back to other one.
                 }
                 else    //  Use corrector to prepare next closure node move
@@ -345,6 +348,7 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
                                         < parameters.elements_in_l)
                     error_code = 2;
                  file.collect(this, 0);
+
                 if (parameters.verbose==2)
                 {
                     dialog *e = new dialog;
@@ -377,11 +381,15 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
         e->exec();
     }
 
-    //  Output the numerical solution
-    beam_profile.ShowCODProfile(1.0, v0);
-    beam_profile.GetBackfillEjectPoint(zeta_backfill_ejection, wdash_max);
+    //  Output the numerical solution, in mm versus diameters
+    //  FIXME: to implement x axis, add x arrays to vptra, and replace 1.0 by
+    //  lambda * parameters.sdr / sdrminus1
+    beam_profile.ShowCODProfile(1.0, v0 * 1000.0);
+    beam_profile.GetBackfillEjectPoint(zeta_backfill_ejection,
+                                       wdash_max);
 
-    solution.collectProfile(beam_profile.vptra, beam_profile.NodeAtClosure()+2);
+    solution.collectProfile(beam_profile.vptra,
+                            beam_profile.NodeAtClosure()+2);
 
     //  Flaring of pipe wall at decompression point:
     deltadstar = w_2 / Constants::pi / parameters.diameter * Constants::kilo
@@ -440,9 +448,9 @@ void BeamModel::crackDrivingForce(Parameters parameters,
     gs1_liqd = Constants::pi / 8.0
                 * pow(gs1_liqd, 2)                  //  * 10^04
                 / liquidcontent.bulk_modulus        //  / 10^09
-                * parameters.liquid_inside_pipe
+                * parameters.liquid_inside_pipe     //  * 10^-02
                 / parameters.crack_width            //  / 10^-03
-                / 100000.0;                         //  hence kJ/m^2
+                / 10000000.0;                         //  hence kJ/m^2
 
     //  External work input to pipe wall flaps (= dUE/da) from planes 1-2:
     gue2 = beam_width

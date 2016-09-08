@@ -493,16 +493,7 @@ void File::writeLogLine(int newline)
         << residual_crack_closure << ","    //  c4
         << pipe_effective_density << ","    //  c5
     //  OutflowProcess
-//        << p_now << ","
-//        << pUnchoke << ","
-//        << pHalfp1 << ","
-//        << tStar << ","
-//        << unchoked << ","
-//        << xUnchoked_i << ","
-//        << tStarUnchoke << ","
-//        << integral_pressure_dt << ","
         << tStarOutflow << ","
-//        << tStarOutflow2 << ","
     //  BeamModel
         << zetaclosure << ","               //  c5
         << node_at_closure << ","           //  c6

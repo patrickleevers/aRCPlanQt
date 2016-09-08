@@ -11,31 +11,36 @@ using namespace std;
 #include "Parameters.h"
 #include "ConfigFile.h"
 
-    string Parameters::pipeid_lib[5] = {"250mm_SDR11",
+    string Parameters::pipeid_lib[6] = {"250mm_SDR11",
                                             "250mm_SDR17",
                                             "110mm_SDR11",
                                             "110mm_SDR17",
+                                            "114mm_SDR19"
                                             "63mm_SDR11"};
-    string Parameters::matid_lib[6] = {"Soft PE80",
-                                            "Generic PE100",
-                                            "Soft PE100",
-                                            "Generic PE1",
-                                            "Generic PE2",
-                                            "Test"};
-    double Parameters::diameter_lib[5] = {250.0, 250.0, 110.0, 110.0, 63.0};
 
-    double Parameters::sdr_lib[5] = {11.0, 17.6, 11.0, 17.6, 11.0};
+    string Parameters::matid_lib[6] = {"Generic PE1",
+                                            "Generic PE2",
+                                            "PE80",
+                                            "PE100",
+                                            "PVCu",
+                                            "Test"};
+
+    double Parameters::diameter_lib[6] = {250.0, 250.0,
+                                            110.0, 110.0,
+                                            114.0, 63.0};
+
+    double Parameters::sdr_lib[6] = {11.0, 17.6, 11.0, 17.6, 19.0, 11.0};
 
     double Parameters::density_lib[6] =
-                    {938.0, 960.0, 938.0, 960.0, 950.0,0.0};
+                    {938.0, 960.0, 938.0, 960.0, 1350.0, 0.0};
     double Parameters::edyn0degc_lib[6] =
-                    {2.62, 3.17, 1.31, 1.585, 1.5,0.0};
+                    {1.585, 1.5, 2.62, 3.17, 4.61, 0.0};
     double Parameters::dedyndt_lib[6] =
-                    {-0.037, -0.0427, -0.0185, -0.02135, -0.02,0.0};
+                    {-0.037, -0.0427, -0.0185, -0.02135, 0.0, 0.0};
     double Parameters::creepmodulus_lib[6] =
-                    {0.3, 0.3, 0.3, 0.3, 0.3,0.0};
+                    {0.3, 0.3, 0.3, 0.3, 3.61, 0.0};
     double Parameters::poisson_lib[6] =
-                    {0.38, 0.38, 0.38, 0.38, 0.38,0.0};
+                    {0.38, 0.38, 0.38, 0.38, 0.38, 0.38};
     double Parameters::from_lib[3] =
                     {0.0, 1.0, 1.0};
     double Parameters::to_lib[3] =
@@ -45,24 +50,23 @@ using namespace std;
 Parameters::Parameters()
 {
 
-    outflow_model_on = 0;
+    outflow_model_on = 2;
     lambda = 3.0;
-    single_mode = 2;
     range_number = 0;
-    elements_in_l = 20;
+    elements_in_l = 25;
     adotc0 = 0.5;
     varname = 0;
 
-    fullscale = 2;
+    fullscale = 0;
     tempdegc = 0.0;
-    p0bar = 5.0;
-    is_backfilled = 2;
+    p0bar = 1.5;
+    is_backfilled = 0;
     backfill_depth = 100;
     backfill_density = 2200;
-    solid_inside_pipe = 0.25;
+    solid_inside_pipe = 25.0;
     liquid_inside_pipe = 0.0;
 
-    h=0.0;
+    h = 0.0;
     crack_width=0.0;
 
     geometryUpdate(0);
@@ -78,8 +82,7 @@ void Parameters::geometryUpdate(int n)
     diameter = diameter_lib[n];
     sdr = sdr_lib[n];
     notch_depth = 0.0;
-    diameter_creep_ratio = 1.0;
-
+    diameter_creep_ratio = 100.0;
 }
 
 //  Update the material for the pipe
@@ -98,7 +101,6 @@ Parameters::Parameters(ConfigFile config)
 {
     config.readInto(outflow_model_on, "outflowModelOn");
     config.readInto(lambda, "lambda");
-    config.readInto(single_mode, "Mode");
     config.readInto(range_number, "numberOfSpeedValues");
     config.readInto(elements_in_l, "elementsInL");
     config.readInto(adotc0, "aDotc0");
@@ -131,7 +133,6 @@ Parameters& Parameters::operator=(const Parameters& rhs)
 {
     outflow_model_on = rhs.outflow_model_on;
     lambda = rhs.lambda;
-    single_mode = rhs.single_mode;
     range_number = rhs.range_number;
     elements_in_l = rhs.elements_in_l;
     adotc0 =  rhs.adotc0;

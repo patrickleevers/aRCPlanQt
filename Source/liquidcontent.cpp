@@ -15,17 +15,16 @@ LiquidContent::LiquidContent()
 }
 
 LiquidContent::LiquidContent(const Parameters parameters)
-{   //  NB This code accounts for dependence of effective density on physical
-    //  crack opening w. If not required, set w = 0:
-    double w = 0.0;
+{
     density = 1000.0;
     bulk_modulus = 3.0;                          //  GPa
     effective_density = 0.0;
     if (parameters.liquid_inside_pipe > 0.0)
     {
         double gkl = 0.0;   //  2 * KE of liquid / unit length / dwdt^2
-        double phi_g0 = Constants::pi * (1.0 - parameters.liquid_inside_pipe
-                                        / (1.0 - parameters.solid_inside_pipe));
+        double phi_g0 = Constants::pi
+                                * (1.0 - parameters.liquid_inside_pipe
+                                    / (100.0 - parameters.solid_inside_pipe));
 
         //  Pipe geometry
         double h = parameters.diameter / parameters.sdr
@@ -33,13 +32,13 @@ LiquidContent::LiquidContent(const Parameters parameters)
         double rm = 0.5 * h * (parameters.sdr - 1.0);   //  mean radius [m]
         double ri = 0.5 * h * (parameters.sdr - 2.0);   //  internal radius [m]
         //  All solid content assumed to be concentrated within radius r_core:
-        double r_core = sqrt(parameters.solid_inside_pipe)
+        double r_core = 0.1 * sqrt(parameters.solid_inside_pipe)
                             * parameters.diameter / 2000.0
                             * (1.0 - 2.0 / parameters.sdr); //  [m]
 
         //  Ratio "dphi_g_dw" of gas sector opening rate to crack opening rate
         double dphi_g_dw = parameters.liquid_inside_pipe / 2.0 / Constants::pi
-                            / (1.0 - parameters.solid_inside_pipe);
+                                / (100.0 - parameters.solid_inside_pipe);
 
         //  2 * kinetic energy per unit length / (dw/dt)^2 =
         //  …due to radial velocity:

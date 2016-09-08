@@ -10518,7 +10518,7 @@ bool QCustomPlot::savePdf(const QString &fileName, bool noCosmeticPen, int width
     newHeight = height;
   }
   
-  QPrinter printer(QPrinter::ScreenResolution);
+   QPrinter printer(QPrinter::ScreenResolution);
   printer.setOutputFileName(fileName);
   printer.setOutputFormat(QPrinter::PdfFormat);
   printer.setFullPage(true);

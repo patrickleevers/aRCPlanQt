@@ -25,13 +25,13 @@ Creep::Creep()
 Creep::Creep(const Parameters parameters)
 {
     //	Calculate natural diameter of pipe
-    //  due to residual strain contraction in time scale of fracture
+    //  after residual strain contraction in time scale of fracture
     creep_modulus_ratio = parameters.creep_modulus / parameters.dynamic_modulus;
 
-    diameter_res0 = parameters.diameter / ((1.0 - creep_modulus_ratio)
-                    + creep_modulus_ratio * 100.0
-                                           / parameters.diameter_creep_ratio);
-
+    diameter_res0 = parameters.diameter /
+                    (1.0
+                      - creep_modulus_ratio *
+                            (1.0   - 100.0 / parameters.diameter_creep_ratio));
     residual_crack_closure = (parameters.diameter - diameter_res0)
                                 * Constants::pi;
 }

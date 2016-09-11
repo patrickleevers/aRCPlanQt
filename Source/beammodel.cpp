@@ -31,28 +31,27 @@ BeamModel::BeamModel(const Parameters parameters)
     initialise();
     extern File file;
 
-//  Residual stress in pipe
-    residualpressure = 2.0 / 300.0 * parameters.dynamic_modulus
-                        / pow(parameters.sdr / sdrminus1, 3)
-                        * (100.0 - parameters.diameter_creep_ratio);
-//  Dimensionless virtual crack opening at tip, representing residual strain
-//    vStarRes = creep.residual_crack_closure / v0 / Constants::kilo;
-
-//  Proportion of internal volume available for expansion
+    //  Proportion of internal volume available for expansion
     pipe_volume_availability = 1.0 - 0.01 * parameters.liquid_inside_pipe;
     if (not parameters.fullscale)
          pipe_volume_availability -= 0.01 * parameters.solid_inside_pipe;
 
-//  Parameters for equivalent beam model
+    //  Parameters for equivalent beam model
     dynamic_shear_modulus = parameters.dynamic_modulus
                                 / 2.0 / (1.0 + parameters.poisson);
     sdrminus1 = parameters.sdr - 1.0;
     sdrminus2 = sdrminus1 - 1.0;
-    radius = parameters.diameter * sdrminus1 / parameters.sdr / 2000.0; //  (m)
+    radius = parameters.diameter * sdrminus1 / parameters.sdr / 2.0e3; //  (m)
     beam_width = 0.5 * parameters.diameter / Constants::kilo
                                 * sdrminus2 / parameters.sdr;           //  (m)
 
-//  Factors for modelling of S4 baffle leak
+    //  Effective internal pressure due to residual stress in pipe
+    residualpressure = 2.0 / 3.0 * parameters.creep_modulus         // * 10^09
+                        / pow(parameters.sdr, 3)
+                        * (100.0 - parameters.diameter_creep_ratio) // * 10^-02
+                        * 100.0;                                //  Hence bar
+
+    //  Factors for modelling of S4 baffle leak
     baffle_leakage_area = parameters.diameter / Constants::kilo;        //  (m)
     baffle_leakage_area = pow(baffle_leakage_area, 2) * 0.01 * Constants::pi
                 * sdrminus2 / parameters.sdr;
@@ -384,7 +383,7 @@ void BeamModel::SolveForCrackProfile(const Parameters parameters,
     //  Output the numerical solution, in mm versus diameters
     //  FIXME: to implement x axis, add x arrays to vptra, and replace 1.0 by
     //  lambda * parameters.sdr / sdrminus1
-    beam_profile.ShowCODProfile(1.0, v0 * 1000.0);
+    beam_profile.ShowCODProfile(1.0, v0 * 1.0e3);
     beam_profile.GetBackfillEjectPoint(zeta_backfill_ejection,
                                        wdash_max);
 
@@ -410,8 +409,10 @@ void BeamModel::crackDrivingForce(Parameters parameters,
     v0 = v00 * pow(lambda, 4);                      //	(m)
     z_outflow = lambda * parameters.diameter / Constants::kilo
                     * sdrminus2 / parameters.sdr;   //  (m)
-
-    w_2 = beam_profile.VStar_2() * v0;
+    //  Plane 2 COD increased to virtual COD to represent residual strain
+    w_2 = beam_profile.VStar_2() * v0
+                + Constants::pi
+                        * (parameters.diameter - creep.diameter_res0) / 1.0e3;
     w_max = beam_profile.VStarMax() * v0;
     wdash_2 = beam_profile.DVStarDZeta_2() * v0 / z_outflow;
     w2dash_2 = beam_profile.D2VStarDZeta2_2() * v0 / pow(z_outflow, 2);
@@ -428,41 +429,42 @@ void BeamModel::crackDrivingForce(Parameters parameters,
     //  Compute signed contributions to strain energy release rate G.
     //  Irwin-Corten GIC, due to direct strain energy input @ crack tip plane 1:
     gs1_ic = Constants::pi / 8.0
-                * pow(p1bar * sdrminus2, 2)         //  * 10^10
+                * pow(p1bar * sdrminus2, 2)         //  * 1e10
                 / parameters.sdr * sdrminus1
-                / parameters.dynamic_modulus        //  / 10^09
-                * parameters.diameter               //  * 10^-03
-                / 100000.0;                         //  hence kJ/m^2
+                / parameters.dynamic_modulus        //  / 1e9
+                * parameters.diameter               //  * 1e-3
+                * 1.0e-5;                           //  hence kJ/m^2
 
     //	Strain energy input due to residual strain in pipe wall at plane 1:
-    gs1_rsid = (parameters.diameter - creep.diameter_res0); //  * 10^-03
+    gs1_rsid = (parameters.diameter - creep.diameter_res0)
+                                    / sdrminus1;    //  * 1e-3
     gs1_rsid = Constants::pi / 6.0
-                * parameters.dynamic_modulus        //  * 10^09
-                * pow(gs1_rsid, 2)                  //  * 10^-06
-                / parameters.crack_width            //  / 10^-03
-                * Constants::kilo;                  //  hence kJ/m^2
+                * parameters.dynamic_modulus        //  * 1e9
+                * pow(gs1_rsid, 2)                  //  * 1e-6
+                / parameters.crack_width            //  / 1e-3
+                * 1.0e3;                            //  hence kJ/m^2
 
     //	Strain energy input due to strain energy of liquid content at plane 1:
     gs1_liqd = p1bar * parameters.diameter * sdrminus2 / parameters.sdr;
-                                                    //  * 10^02
+                                                    //  * 1e2
     gs1_liqd = Constants::pi / 8.0
-                * pow(gs1_liqd, 2)                  //  * 10^04
-                / liquidcontent.bulk_modulus        //  / 10^09
-                * parameters.liquid_inside_pipe     //  * 10^-02
-                / parameters.crack_width            //  / 10^-03
-                / 10000000.0;                         //  hence kJ/m^2
+                * pow(gs1_liqd, 2)                  //  * 1e4
+                / liquidcontent.bulk_modulus        //  / 1e9
+                * parameters.liquid_inside_pipe     //  * 1e-2
+                / parameters.crack_width            //  / 1e-3
+                * 1.0e-7;                           //  hence kJ/m^2
 
     //  External work input to pipe wall flaps (= dUE/da) from planes 1-2:
     gue2 = beam_width
-                * p1bar                             //  * 10^5
+                * p1bar                             //  * 1e5
                 * w_2
-                / parameters.crack_width            //  / 10^-03
-                * 100000.0;                         //  hence kJ/m^2
+                / parameters.crack_width            //  / 1e-3
+                * 1.0e5;                            //  hence kJ/m^2
 
     //  Strain energy output at plane 2 due to bending:
     //  (Pipe Model Manual p36, NB h/r = 2.0/ (parameters.sdr-1))
     gs2 = -(
-                0.5 * parameters.dynamic_modulus *  //  * 10^09
+                0.5 * parameters.dynamic_modulus *  //  * 1e9
                 (
                     pow(w_2, 2)
                         / pow(sdrminus1, 3) / 3.0 / Constants::pi
@@ -471,16 +473,16 @@ void BeamModel::crackDrivingForce(Parameters parameters,
                         * parameters.h
                 )
                 +   Constants::pi / 12.0
-                        * dynamic_shear_modulus     //  * 10^09
+                        * dynamic_shear_modulus     //  * 1e9
                         * radius
                         * parameters.h
                         * pow(wdash_2 / sdrminus1, 2)
-            ) / parameters.crack_width              //  / 10^-03
-            * Constants::giga;                      //  hence kJ/m^2
+            ) / parameters.crack_width              //  / 1e-3
+            * 1.0e9;                                //  hence kJ/m^2
 
     //  Kinetic energy output at plane 2 with pipe wall and any attached liquid:
     //  (Pipe Model Manual. pg36)
-    gk2 = -0.5 * parameters.dynamic_modulus         //  * 10^09
+    gk2 = -0.5 * parameters.dynamic_modulus         //  * 1e9
                 * pow(adotovercl, 2)
                 * radius
                 * parameters.h
@@ -490,8 +492,8 @@ void BeamModel::crackDrivingForce(Parameters parameters,
                     +   Constants::c1
                             * pow(w2dash_2 * radius, 2)
                     )
-                / parameters.crack_width            //  / 10^-03
-                * Constants::giga;                  //  hence kJ/m^2
+                / parameters.crack_width            //  / 1e-3
+                * 1.0e9;                            //  hence kJ/m^2
 
     //  Kinetic energy output as free backfill at ejection point:
     gk2_bf = wdash_max * parameters.adotc0 * Constants::vSonic;

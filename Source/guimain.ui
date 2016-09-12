@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>770</width>
-    <height>879</height>
+    <height>741</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,13 +22,13 @@
   <property name="minimumSize">
    <size>
     <width>770</width>
-    <height>0</height>
+    <height>730</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>750</width>
-    <height>879</height>
+    <width>770</width>
+    <height>764</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -40,14 +40,14 @@
   <widget class="QWidget" name="centralwidget">
    <property name="minimumSize">
     <size>
-     <width>760</width>
-     <height>0</height>
+     <width>740</width>
+     <height>730</height>
     </size>
    </property>
    <property name="maximumSize">
     <size>
      <width>760</width>
-     <height>16777215</height>
+     <height>730</height>
     </size>
    </property>
    <property name="styleSheet">
@@ -74,13 +74,13 @@
       <property name="minimumSize">
        <size>
         <width>280</width>
-        <height>0</height>
+        <height>730</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
         <width>280</width>
-        <height>16777215</height>
+        <height>730</height>
        </size>
       </property>
       <property name="frameShape">
@@ -107,6 +107,18 @@
        </property>
        <item row="0" column="0">
         <widget class="QFrame" name="frame">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>720</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>720</height>
+          </size>
+         </property>
          <property name="frameShape">
           <enum>QFrame::Box</enum>
          </property>
@@ -140,7 +152,13 @@
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>45</height>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
              </size>
             </property>
             <property name="font">
@@ -177,13 +195,13 @@
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>0</height>
+              <height>520</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>0</height>
+              <height>520</height>
              </size>
             </property>
             <property name="sizeIncrement">
@@ -448,7 +466,13 @@
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>45</height>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
              </size>
             </property>
             <property name="font">
@@ -695,7 +719,13 @@
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>45</height>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
              </size>
             </property>
             <property name="font">
@@ -751,6 +781,13 @@
              <number>0</number>
             </property>
             <layout class="QGridLayout" name="gridLayout_7">
+             <item row="5" column="1">
+              <widget class="QCheckBox" name="s4">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
              <item row="12" column="0" colspan="2">
               <layout class="QHBoxLayout" name="horizontalLayout_15">
                <item>
@@ -847,7 +884,7 @@
                </property>
               </widget>
              </item>
-             <item row="25" column="0">
+             <item row="21" column="0">
               <spacer name="verticalSpacer_6">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
@@ -923,56 +960,6 @@
                </property>
               </widget>
              </item>
-             <item row="15" column="0">
-              <widget class="QLabel" name="PipeID_13">
-               <property name="minimumSize">
-                <size>
-                 <width>250</width>
-                 <height>42</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>250</width>
-                 <height>42</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Internal volume occupied by rigid core:</string>
-               </property>
-               <property name="wordWrap">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="20" column="0">
-              <widget class="QLabel" name="PipeID_14">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>250</width>
-                 <height>40</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>250</width>
-                 <height>42</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Internal volume occupied by liquid:</string>
-               </property>
-               <property name="wordWrap">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
              <item row="11" column="0">
               <widget class="QLabel" name="PipeID_11">
                <property name="text">
@@ -1012,14 +999,14 @@
                </property>
               </widget>
              </item>
-             <item row="23" column="0">
+             <item row="19" column="0">
               <widget class="QLabel" name="PipeID_17">
                <property name="text">
                 <string>Number of finite elements:</string>
                </property>
               </widget>
              </item>
-             <item row="24" column="0">
+             <item row="20" column="0">
               <widget class="QLineEdit" name="fdnumber">
                <property name="minimumSize">
                 <size>
@@ -1035,13 +1022,88 @@
                </property>
               </widget>
              </item>
-             <item row="21" column="0">
-              <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item row="5" column="0">
+              <widget class="QLabel" name="label_13">
+               <property name="text">
+                <string>S4:</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_8">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="contentsbutton">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="autoFillBackground">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Pipe Contents</string>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="contentframe">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777214</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::Box</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
+            </property>
+            <property name="lineWidth">
+             <number>0</number>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_6">
+             <item row="13" column="0">
+              <layout class="QHBoxLayout" name="horizontalLayout_10">
+               <property name="spacing">
+                <number>6</number>
+               </property>
                <property name="topMargin">
                 <number>0</number>
                </property>
                <item>
-                <widget class="QLineEdit" name="liquidfraction">
+                <widget class="QLineEdit" name="liquiddensity">
                  <property name="minimumSize">
                   <size>
                    <width>200</width>
@@ -1057,22 +1119,15 @@
                 </widget>
                </item>
                <item>
-                <widget class="QLabel" name="label_3">
+                <widget class="QLabel" name="label_32">
                  <property name="text">
-                  <string>%</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;kg m&lt;span style=&quot; vertical-align:super;&quot;&gt;-3&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                 </widget>
                </item>
               </layout>
              </item>
-             <item row="5" column="0">
-              <widget class="QLabel" name="label_13">
-               <property name="text">
-                <string>S4:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="17" column="0" colspan="2">
+             <item row="2" column="0">
               <layout class="QHBoxLayout" name="horizontalLayout">
                <property name="spacing">
                 <number>6</number>
@@ -1105,21 +1160,257 @@
                </item>
               </layout>
              </item>
-             <item row="5" column="1">
-              <widget class="QCheckBox" name="s4">
+             <item row="4" column="0">
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLineEdit" name="liquidfraction">
+                 <property name="minimumSize">
+                  <size>
+                   <width>200</width>
+                   <height>21</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>200</width>
+                   <height>21</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_3">
+                 <property name="text">
+                  <string>%</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="15" column="0">
+              <widget class="QLabel" name="label_30">
                <property name="text">
-                <string/>
+                <string>Gas:</string>
                </property>
               </widget>
              </item>
+             <item row="7" column="0">
+              <widget class="QLabel" name="label_23">
+               <property name="text">
+                <string>Liquid:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="0">
+              <widget class="QComboBox" name="liquidname">
+               <property name="minimumSize">
+                <size>
+                 <width>200</width>
+                 <height>21</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>200</width>
+                 <height>28</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="Line" name="line_15">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="19" column="0">
+              <spacer name="verticalSpacer_7">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="PipeID_13">
+               <property name="minimumSize">
+                <size>
+                 <width>250</width>
+                 <height>42</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>250</width>
+                 <height>42</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Internal volume occupied by rigid core:</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="PipeID_14">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>250</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>250</width>
+                 <height>42</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Internal volume occupied by liquid:</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="9" column="0">
+              <widget class="QLabel" name="label_28">
+               <property name="text">
+                <string>Bulk modulus:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <layout class="QHBoxLayout" name="horizontalLayout_4">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLineEdit" name="gasfraction">
+                 <property name="minimumSize">
+                  <size>
+                   <width>200</width>
+                   <height>21</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>200</width>
+                   <height>21</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_20">
+                 <property name="text">
+                  <string>%</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="18" column="0">
+              <widget class="QLineEdit" name="gasspecificheat">
+               <property name="minimumSize">
+                <size>
+                 <width>200</width>
+                 <height>21</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>200</width>
+                 <height>12</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="16" column="0">
+              <widget class="QComboBox" name="gasname">
+               <property name="minimumSize">
+                <size>
+                 <width>200</width>
+                 <height>21</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>200</width>
+                 <height>28</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="12" column="0">
+              <widget class="QLabel" name="label_29">
+               <property name="text">
+                <string>Density:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="17" column="0">
+              <widget class="QLabel" name="label_31">
+               <property name="text">
+                <string>Ratio of specific heat:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0">
+              <widget class="QLabel" name="label_19">
+               <property name="text">
+                <string>Internal volume occupied by gas:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="0">
+              <layout class="QHBoxLayout" name="horizontalLayout_12">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLineEdit" name="liquidbulkmodulus">
+                 <property name="minimumSize">
+                  <size>
+                   <width>200</width>
+                   <height>21</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>200</width>
+                   <height>21</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_33">
+                 <property name="text">
+                  <string>GPa</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
             </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="Line" name="line_8">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
            </widget>
           </item>
           <item>
@@ -1127,13 +1418,13 @@
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>50</height>
+              <height>30</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>45</height>
+              <height>30</height>
              </size>
             </property>
             <property name="font">
@@ -1164,7 +1455,7 @@
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>540</height>
+              <height>0</height>
              </size>
             </property>
             <property name="sizeIncrement">
@@ -1464,7 +1755,13 @@
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>45</height>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
              </size>
             </property>
             <property name="font">
@@ -1588,19 +1885,6 @@
            </widget>
           </item>
           <item>
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
            <widget class="Line" name="line_9">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -1612,13 +1896,13 @@
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>50</height>
+              <height>30</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>45</height>
+              <height>30</height>
              </size>
             </property>
             <property name="frameShape">
@@ -1654,10 +1938,16 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>40</height>
+                </size>
+               </property>
                <property name="maximumSize">
                 <size>
                  <width>100</width>
-                 <height>45</height>
+                 <height>40</height>
                 </size>
                </property>
                <property name="font">
@@ -1676,6 +1966,18 @@
              </item>
              <item>
               <widget class="Line" name="line_5">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>40</height>
+                </size>
+               </property>
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
                </property>
@@ -1692,10 +1994,16 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>40</height>
+                </size>
+               </property>
                <property name="maximumSize">
                 <size>
                  <width>100</width>
-                 <height>45</height>
+                 <height>40</height>
                 </size>
                </property>
                <property name="font">
@@ -1732,7 +2040,13 @@
       <property name="minimumSize">
        <size>
         <width>460</width>
-        <height>0</height>
+        <height>730</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>730</height>
        </size>
       </property>
       <property name="frameShape">
@@ -1770,14 +2084,14 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>490</width>
+           <width>400</width>
            <height>100</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>16777215</height>
+           <height>360</height>
           </size>
          </property>
          <property name="autoFillBackground">
@@ -1842,12 +2156,12 @@
             <property name="minimumSize">
              <size>
               <width>450</width>
-              <height>350</height>
+              <height>300</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>450</width>
+              <width>300</width>
               <height>16777215</height>
              </size>
             </property>
@@ -1871,14 +2185,14 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>490</width>
+           <width>400</width>
            <height>100</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>16777215</height>
+           <height>360</height>
           </size>
          </property>
          <property name="autoFillBackground">
@@ -1936,13 +2250,13 @@
             <property name="minimumSize">
              <size>
               <width>450</width>
-              <height>350</height>
+              <height>300</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>450</width>
-              <height>16777215</height>
+              <height>300</height>
              </size>
             </property>
             <property name="contextMenuPolicy">

@@ -981,11 +981,12 @@ void guimain::on_fixedlength_clicked(bool checked)
 
 void guimain::on_materialbutton_clicked()
 {
-    ui -> materialframe -> setFixedHeight(540);
+    ui -> materialframe -> setFixedHeight(520);
     ui -> debuggingframe -> setFixedHeight(0);
     ui -> pipeframe -> setFixedHeight(0);
     ui -> testframe -> setFixedHeight(0);
     ui -> variableframe -> setFixedHeight(0);
+    ui ->contentframe -> setFixedHeight(0);
     ui -> density -> setFocus();
 }
 
@@ -993,9 +994,10 @@ void guimain::on_pipebutton_clicked()
 {
     ui -> materialframe -> setFixedHeight(0);
     ui -> debuggingframe -> setFixedHeight(0);
-    ui -> pipeframe -> setFixedHeight(540);
+    ui -> pipeframe -> setFixedHeight(520);
     ui -> testframe -> setFixedHeight(0);
     ui -> variableframe -> setFixedHeight(0);
+    ui ->contentframe -> setFixedHeight(0);
     ui -> outsidediameter -> setFocus();
 }
 
@@ -1004,8 +1006,9 @@ void guimain::on_testbutton_clicked()
     ui -> materialframe -> setFixedHeight(0);
     ui -> debuggingframe -> setFixedHeight(0);
     ui -> pipeframe -> setFixedHeight(0);
-    ui -> testframe -> setFixedHeight(540);
+    ui -> testframe -> setFixedHeight(520);
     ui -> variableframe -> setFixedHeight(0);
+    ui ->contentframe -> setFixedHeight(0);
     ui -> backfilldepth -> setFocus();
 }
 
@@ -1015,18 +1018,33 @@ void guimain::on_variablebutton_clicked()
     ui -> debuggingframe -> setFixedHeight(0);
     ui -> pipeframe -> setFixedHeight(0);
     ui -> testframe -> setFixedHeight(0);
-    ui -> variableframe -> setFixedHeight(540);
+    ui -> variableframe -> setFixedHeight(520);
+    ui ->contentframe -> setFixedHeight(0);
     ui -> from -> setFocus();
 }
 
 void guimain::on_Debuggingbutton_clicked()
 {
     ui -> materialframe -> setFixedHeight(0);
-    ui -> debuggingframe -> setFixedHeight(540);
+    ui -> debuggingframe -> setFixedHeight(520);
     ui -> pipeframe -> setFixedHeight(0);
     ui -> testframe -> setFixedHeight(0);
     ui -> variableframe -> setFixedHeight(0);
+    ui ->contentframe -> setFixedHeight(0);
     ui -> verbose -> setFocus();
+}
+
+void guimain::on_contentsbutton_clicked()
+{
+
+    ui -> materialframe -> setFixedHeight(0);
+    ui -> debuggingframe -> setFixedHeight(0);
+    ui -> pipeframe -> setFixedHeight(0);
+    ui -> testframe -> setFixedHeight(0);
+    ui -> variableframe -> setFixedHeight(0);
+    ui ->contentframe -> setFixedHeight(520);
+    ui -> solidfraction -> setFocus();
+
 }
 
 void guimain::on_backfill_clicked(bool checked)

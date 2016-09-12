@@ -79,6 +79,8 @@ private slots:
 
    void on_backfill_clicked(bool checked);
 
+   void on_contentsbutton_clicked();
+
 private:
 
     int i;

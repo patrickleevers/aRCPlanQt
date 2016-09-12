@@ -31,6 +31,12 @@ public:
     static double notchdepth_lib[5];
     static double diametercreepratio_lib[5];
 
+    static string gasname_lib[3];
+    static double gasspecificheat_lib[3];
+    static string liquidname_lib[2];
+    static double liquidbulkmodulus_lib[2];
+    static double liquiddensity_lib[2];
+
     static double from_lib[3];
     static double to_lib[3];
 
@@ -43,6 +49,7 @@ public:
     double backfill_density;
     double solid_inside_pipe;
     double liquid_inside_pipe;
+    double gas_inside_pipe;
 
     string matid;
     double density;
@@ -60,6 +67,11 @@ public:
     double diameter_creep_ratio;
     double h;
     double crack_width;
+
+    string gasname;
+    double gasspecificheat;
+    double liquidbulkmodulus;
+    double liquiddensity;
 
     short verbose;
     int outflow_model_on;

@@ -6,16 +6,16 @@
 #include <iostream>
 
 #include "dialog.h"
-#include "Constants.h"
+#include "constants.h"
 #include "backfill.h"
 #include "liquidcontent.h"
-#include "BeamModel.h"
-#include "Parameters.h"
-#include "OutflowProcess.h"
-#include "Decompression.h"
-#include "FDprofile.h"
-#include "Solution.h"
-#include "File.h"
+#include "beammodel.h"
+#include "parameters.h"
+#include "outflowprocess.h"
+#include "decompression.h"
+#include "fdprofile.h"
+#include "solution.h"
+#include "file.h"
 
 
 BeamModel::BeamModel()

@@ -5,7 +5,7 @@
 //  http://www.sciencedirect.com/science/article/pii/S0013794412003530
 
 #include "cmath"
-#include "Backfill.h"
+#include "backfill.h"
 #include "constants.h"
 
 //  Null constructor

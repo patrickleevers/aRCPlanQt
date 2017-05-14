@@ -31,9 +31,9 @@
 #include <vector>
 
 #include "fdprofile.h"
-#include "Backfill.h"
+#include "backfill.h"
 #include "liquidcontent.h"
-#include "Creep.h"
+#include "creep.h"
 
 class BeamModel
 {

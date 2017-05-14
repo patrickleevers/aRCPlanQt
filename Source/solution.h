@@ -10,8 +10,8 @@
 #include <cstdlib>
 using namespace std;
 
-#include "FDprofile.h"
-#include "Parameters.h"
+#include "fdprofile.h"
+#include "parameters.h"
 
 class Solution{
 

@@ -11,7 +11,7 @@
 #include <cmath>
 using namespace std;
 
-#include "SymDoubleMatrix.h"
+#include "symdoublematrix.h"
 
 // Construct n x n symmetric double matrix stored row-wise in 1D array
 SymDoubleMatrix::SymDoubleMatrix(short n)

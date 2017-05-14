@@ -15,9 +15,9 @@
 #ifndef _LIQUIDCONTENT_H
 #define _LIQUIDCONTENT_H
 
-#include "Parameters.h"
+#include "parameters.h"
 #include "liquidcontent.h"
-#include "Constants.h"
+#include "constants.h"
 
 class LiquidContent
 {

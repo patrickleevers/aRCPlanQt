@@ -7,8 +7,8 @@
 //  Class representing a model of residual stress in a plastic pipe,
 //  as measured by the diametral creep contraction after a split ring test.
 
-#include "Constants.h"
-#include "Creep.h"
+#include "constants.h"
+#include "creep.h"
 
 //Null constructor
 Creep::Creep()

@@ -8,8 +8,8 @@
 #include <iostream>
 using namespace std;
 
-#include "Parameters.h"
-#include "ConfigFile.h"
+#include "parameters.h"
+#include "configfile.h"
 
     string Parameters::pipeid_lib[6] = {"250mm_SDR11",
                                             "250mm_SDR17",

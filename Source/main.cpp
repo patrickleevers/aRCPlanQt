@@ -14,9 +14,9 @@ using namespace std;
 
 #include "guimain.h"
 #include "ui_guimain.h"
-#include "Simulation.h"
-#include "File.h"
-#include "Solution.h"
+#include "simulation.h"
+#include "file.h"
+#include "solution.h"
 
 File file;
 Solution solution;

@@ -11,7 +11,7 @@
 #include <fstream>
 using namespace std;
 
-#include "ConfigFile.h"
+#include "configfile.h"
 
 class Parameters
 {

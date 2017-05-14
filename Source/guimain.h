@@ -9,9 +9,9 @@
 #include <QMainWindow>
 #include <fstream>
 
-#include "Parameters.h"
-#include "Solution.h"
-#include "Simulation.h"
+#include "parameters.h"
+#include "solution.h"
+#include "simulation.h"
 
 namespace Ui {
 class guimain;

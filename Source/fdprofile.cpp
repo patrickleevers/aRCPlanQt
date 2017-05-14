@@ -8,7 +8,7 @@
 #include <cstdlib>
 using namespace std;
 
-#include "FDprofile.h"
+#include "fdprofile.h"
 
 
 FDprofile::FDprofile()

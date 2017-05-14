@@ -15,8 +15,8 @@
 #include "about.h"
 #include "dialog.h"
 #include "qcustomplot.h"
-#include "File.h"
-#include "Constants.h"
+#include "file.h"
+#include "constants.h"
 
 guimain::guimain(QWidget *parent) :
     QMainWindow(parent),
@@ -182,7 +182,7 @@ void guimain::setnames(Parameters parameters, char dropdown)
     ui -> fdnumber -> setAlignment(Qt::AlignRight);
     ui -> fdnumber -> setText(QString::number(parameters.elements_in_l));
 
-    }
+}
 
 //Begins the calculation process, calls various functions which eventually provide
 //a solution and the accompanying outputs

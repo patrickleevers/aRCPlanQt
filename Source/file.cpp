@@ -11,7 +11,7 @@
 #include <sys/stat.h>
 using namespace std;
 
-#include "File.h"
+#include "file.h"
 
 //  Null constructor
 File::File()

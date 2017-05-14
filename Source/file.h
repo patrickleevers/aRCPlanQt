@@ -19,12 +19,12 @@
 #include <fstream>
 using namespace std;
 
-#include "Parameters.h"
-#include "Solution.h"
-#include "Creep.h"
-#include "Backfill.h"
-#include "BeamModel.h"
-#include "OutflowProcess.h"
+#include "parameters.h"
+#include "solution.h"
+#include "creep.h"
+#include "backfill.h"
+#include "beammodel.h"
+#include "outflowprocess.h"
 
 class File : public Creep,
         public Backfill,

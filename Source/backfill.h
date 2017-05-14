@@ -13,8 +13,8 @@
 #ifndef _BACKFILL_H
 #define _BACKFILL_H
 
-#include "Parameters.h"
-#include "Backfill.h"
+#include "parameters.h"
+#include "backfill.h"
 
 class Backfill
 {

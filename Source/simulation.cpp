@@ -9,8 +9,8 @@
 #include <iostream>
 using namespace std;
 
-#include "Constants.h"
-#include "Simulation.h"
+#include "constants.h"
+#include "simulation.h"
 #include "guimain.h"
 #include "ui_guimain.h"
 
@@ -54,6 +54,9 @@ Solution Simulation::run(Parameters parameters)
     //  Proceed to vary crack speed
     for (i = 0; i < parameters.range_number; i++)
     {
+
+        qDebug() << "Test 1" << i;
+
         //  Method for iterating independent variable
         switch(parameters.varname)
         {
@@ -85,15 +88,21 @@ Solution Simulation::run(Parameters parameters)
         Creep creep(parameters);
         file.collect(creep);
 
+        qDebug() << "Test 2" << i;
+
         //  Speed dependent properties
         beamModel.reset(parameters,
                         backfill,
                         liquidcontent,
                         creep);
 
+        qDebug() << "Test 3" << i;
+
         // Determine crack opening displacement profile
         beamModel.SolveForCrackProfile(parameters,
                                        creep);
+
+        qDebug() << "Test 4" << i;
 
         beamModel.crackDrivingForce(parameters,
                                     backfill,

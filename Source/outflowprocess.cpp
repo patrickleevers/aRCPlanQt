@@ -9,9 +9,9 @@
 #include <cstdlib>
 using namespace std;
 
-#include "Constants.h"
-#include "OutflowProcess.h"
-#include "File.h"
+#include "constants.h"
+#include "outflowprocess.h"
+#include "file.h"
 
 const short OutflowProcess::maxTimeSteps = 100;
 

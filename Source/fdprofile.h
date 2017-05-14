@@ -14,7 +14,9 @@
 #define FDprofileH
 
 #include <vector>
-#include "SymDoubleMatrix.h"
+#include "symdoublematrix.h"
+
+using namespace std;
 
 class FDprofile
 {

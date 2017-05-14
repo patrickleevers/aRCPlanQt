@@ -10,7 +10,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include "Solution.h"
+#include "solution.h"
 
 //Null constructor
 Solution::Solution()
